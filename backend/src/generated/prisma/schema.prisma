@@ -1,0 +1,411 @@
+// =============================================================
+// SEAPEDIA – Prisma Schema
+// Designed to support all 7 phases without structural rewrites
+// =============================================================
+
+generator client {
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =============================================================
+// ENUMS
+// =============================================================
+
+enum RoleType {
+  ADMIN
+  BUYER
+  SELLER
+  DRIVER
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT // Waiting for buyer to pay
+  PAID // Payment confirmed
+  PROCESSING // Seller is preparing the order
+  READY_FOR_PICKUP // Seller packed, waiting for driver
+  ON_DELIVERY // Driver picked up, heading to buyer
+  DELIVERED // Buyer received the order
+  COMPLETED // Buyer confirmed receipt
+  CANCELLED // Cancelled by buyer or seller
+  REFUNDED // Money returned to wallet
+}
+
+enum DeliveryStatus {
+  WAITING_FOR_DRIVER // No driver assigned yet
+  ASSIGNED // Driver accepted the job
+  PICKED_UP // Driver picked up from seller
+  DELIVERED // Dropped off at buyer
+}
+
+enum WalletTransactionType {
+  TOPUP // User adds money
+  PAYMENT // Deducted on checkout
+  REFUND // Money returned
+  EARNING // Driver receives payment
+}
+
+enum VoucherType {
+  PERCENTAGE // e.g. 10% off
+  FIXED // e.g. Rp 20.000 off
+}
+
+enum PromoType {
+  PERCENTAGE
+  FIXED
+}
+
+// =============================================================
+// USER & ROLES
+// =============================================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String // bcrypt hashed
+  name      String
+  phone     String?
+  avatarUrl String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  roles            UserRole[]
+  store            Store?
+  addresses        Address[]
+  wallet           Wallet?
+  cart             Cart?
+  ordersAsBuyer    Order[]        @relation("BuyerOrders")
+  reviews          Review[]
+  notifications    Notification[]
+  driverDeliveries Delivery[]     @relation("DriverDeliveries")
+
+  @@map("users")
+}
+
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  role      RoleType
+  isActive  Boolean  @default(true) // which role is currently active
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, role]) // one role type per user
+  @@map("user_roles")
+}
+
+// =============================================================
+// STORE & PRODUCTS
+// =============================================================
+
+model Store {
+  id          String   @id @default(cuid())
+  userId      String   @unique // one store per seller
+  name        String   @unique // unique store name, like Tokopedia
+  slug        String   @unique // URL-friendly: "my-store"
+  description String?
+  logoUrl     String?
+  bannerUrl   String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products Product[]
+  orders   Order[]
+
+  @@map("stores")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  iconUrl   String?
+  createdAt DateTime @default(now())
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  storeId     String
+  categoryId  String
+  name        String
+  slug        String
+  description String?
+  price       Decimal  @db.Decimal(15, 2) // supports Rp 999.999.999,99
+  stock       Int      @default(0)
+  weight      Decimal  @db.Decimal(8, 2) // in grams, for delivery fee calc
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  store      Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  category   Category       @relation(fields: [categoryId], references: [id])
+  images     ProductImage[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+  reviews    Review[]
+
+  @@unique([storeId, slug]) // slug unique per store
+  @@map("products")
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  url       String
+  isPrimary Boolean @default(false)
+  order     Int     @default(0) // display order
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// =============================================================
+// ADDRESS
+// =============================================================
+
+model Address {
+  id            String   @id @default(cuid())
+  userId        String
+  label         String // e.g. "Home", "Office"
+  recipientName String
+  phone         String
+  street        String
+  city          String
+  province      String
+  postalCode    String
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@map("addresses")
+}
+
+// =============================================================
+// WALLET
+// =============================================================
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   Decimal  @default(0) @db.Decimal(15, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+
+  @@map("wallets")
+}
+
+model WalletTransaction {
+  id            String                @id @default(cuid())
+  walletId      String
+  type          WalletTransactionType
+  amount        Decimal               @db.Decimal(15, 2)
+  balanceBefore Decimal               @db.Decimal(15, 2)
+  balanceAfter  Decimal               @db.Decimal(15, 2)
+  description   String?
+  referenceId   String? // orderId or topup receipt
+  createdAt     DateTime              @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@map("wallet_transactions")
+}
+
+// =============================================================
+// CART
+// =============================================================
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String   @unique // one active cart per user
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart    Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId]) // no duplicate items in cart
+  @@map("cart_items")
+}
+
+// =============================================================
+// ORDERS
+// =============================================================
+
+model Order {
+  id        String      @id @default(cuid())
+  buyerId   String
+  storeId   String
+  addressId String
+  status    OrderStatus @default(PENDING_PAYMENT)
+
+  // Pricing snapshot (never recalculate from current prices)
+  subtotal       Decimal @db.Decimal(15, 2)
+  deliveryFee    Decimal @db.Decimal(15, 2)
+  taxAmount      Decimal @db.Decimal(15, 2) // PPN 11%
+  discountAmount Decimal @default(0) @db.Decimal(15, 2)
+  totalAmount    Decimal @db.Decimal(15, 2)
+
+  voucherId String?
+  promoId   String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  buyer    User        @relation("BuyerOrders", fields: [buyerId], references: [id])
+  store    Store       @relation(fields: [storeId], references: [id])
+  address  Address     @relation(fields: [addressId], references: [id])
+  items    OrderItem[]
+  delivery Delivery?
+  voucher  Voucher?    @relation(fields: [voucherId], references: [id])
+  promo    Promo?      @relation(fields: [promoId], references: [id])
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  productId   String
+  productName String // snapshot: name at time of purchase
+  productImg  String? // snapshot: image at time of purchase
+  price       Decimal @db.Decimal(15, 2) // snapshot: price at purchase
+  quantity    Int
+  subtotal    Decimal @db.Decimal(15, 2)
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+// =============================================================
+// DELIVERY
+// =============================================================
+
+model Delivery {
+  id          String         @id @default(cuid())
+  orderId     String         @unique
+  driverId    String? // null until a driver accepts
+  status      DeliveryStatus @default(WAITING_FOR_DRIVER)
+  fee         Decimal        @db.Decimal(15, 2)
+  pickedUpAt  DateTime?
+  deliveredAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  order  Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  driver User? @relation("DriverDeliveries", fields: [driverId], references: [id])
+
+  @@map("deliveries")
+}
+
+// =============================================================
+// VOUCHERS & PROMOS
+// =============================================================
+
+model Voucher {
+  id             String      @id @default(cuid())
+  code           String      @unique
+  type           VoucherType
+  value          Decimal     @db.Decimal(15, 2)
+  minOrderAmount Decimal?    @db.Decimal(15, 2)
+  maxDiscount    Decimal?    @db.Decimal(15, 2) // cap for PERCENTAGE type
+  usageLimit     Int? // null = unlimited
+  usedCount      Int         @default(0)
+  isActive       Boolean     @default(true)
+  expiresAt      DateTime?
+  createdAt      DateTime    @default(now())
+
+  orders Order[]
+
+  @@map("vouchers")
+}
+
+model Promo {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  type        PromoType
+  value       Decimal   @db.Decimal(15, 2)
+  bannerUrl   String?
+  isActive    Boolean   @default(true)
+  startDate   DateTime
+  endDate     DateTime
+  createdAt   DateTime  @default(now())
+
+  orders Order[]
+
+  @@map("promos")
+}
+
+// =============================================================
+// REVIEWS
+// =============================================================
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  rating    Int // 1–5
+  comment   String?
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId]) // one review per product per user
+  @@map("reviews")
+}
+
+// =============================================================
+// NOTIFICATIONS
+// =============================================================
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  link      String? // optional deep link
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
