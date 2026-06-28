@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "../src/context/Authcontext";
+import { AuthProvider } from "./context/Authcontext";
 import MainLayout from "./layouts/MainLayout";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import RoleRoute from "./components/common/RoleRoute";
@@ -9,15 +9,16 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import RoleSelectPage from "./pages/RoleSelectPage";
+import ProductsPage from "./pages/ProductPage";
+import ProductDetailPage from "./pages/ProductDetailPage";
 import CreateStorePage from "./pages/seller/CreateStorePage";
 import MyStorePage from "./pages/seller/MyStorePage";
+import CreateProductPage from "./pages/seller/CreateProductPage";
+import WalletPage from "./pages/buyer/WalletPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 1000 * 60 * 5,
-    },
+    queries: { retry: 1, staleTime: 1000 * 60 * 5 },
   },
 });
 
@@ -29,39 +30,49 @@ const App = () => {
           <Routes>
             <Route element={<MainLayout />}>
 
-              {/* Public routes */}
+              {/* Public */}
               <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route
+                path="/products/:storeSlug/:productSlug"
+                element={<ProductDetailPage />}
+              />
 
-              {/* Requires login */}
+              {/* Protected */}
               <Route element={<ProtectedRoute />}>
                 <Route path="/role-select" element={<RoleSelectPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/wallet" element={<WalletPage />} />
+                <Route
+                  path="/seller/create-store"
+                  element={<CreateStorePage />}
+                />
 
-                {/* Seller routes */}
+                {/* Seller */}
                 <Route element={<RoleRoute allowedRoles={["SELLER"]} />}>
                   <Route path="/seller/store" element={<MyStorePage />} />
+                  <Route
+                    path="/seller/products/create"
+                    element={<CreateProductPage />}
+                  />
                 </Route>
 
-                {/* Create store — any logged in user */}
-                <Route path="/seller/create-store" element={<CreateStorePage />} />
-
-                {/* Buyer only — Phase 3 */}
+                {/* Buyer — Phase 3 continues */}
                 <Route element={<RoleRoute allowedRoles={["BUYER"]} />}>
                 </Route>
 
-                {/* Driver only — Phase 5 */}
+                {/* Driver — Phase 5 */}
                 <Route element={<RoleRoute allowedRoles={["DRIVER"]} />}>
                 </Route>
 
-                {/* Admin only — Phase 6 */}
+                {/* Admin — Phase 6 */}
                 <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
                 </Route>
               </Route>
 
             </Route>
-
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Wallet } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -106,6 +107,10 @@ const Navbar = () => {
                     <DropdownMenuItem onClick={() => navigate("/dashboard")}>
                       <LayoutDashboard className="w-4 h-4 mr-2" />
                       Dashboard
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/wallet")}>
+                    <Wallet className="w-4 h-4 mr-2" />
+                      My Wallet
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/profile")}>
                       <User className="w-4 h-4 mr-2" />
