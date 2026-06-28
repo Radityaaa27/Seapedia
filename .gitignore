@@ -1,16 +1,22 @@
 # Dependencies
 node_modules/
-frontend/node_modules/
-backend/node_modules/
+**/node_modules/
 
 # Build output
-frontend/dist/
-backend/dist/
+**/dist/
 
 # Environment secrets
 .env
-backend/.env
+**/.env
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
