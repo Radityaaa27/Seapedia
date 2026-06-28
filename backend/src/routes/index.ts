@@ -1,11 +1,10 @@
 import { Router } from "express";
 import authRoutes from "./auth.routes";
-
-// Central route registry.
-// Every new feature gets added here — keeps app.ts clean.
+import roleRoutes from "./roleRoutes";
 
 const router = Router();
 
 router.use("/auth", authRoutes);
+router.use("/roles", roleRoutes);
 
 export default router;

@@ -2,12 +2,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import {
   Search,
@@ -16,11 +18,19 @@ import {
   LogOut,
   LayoutDashboard,
   User,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 
+const roleBadgeColor: Record<string, string> = {
+  BUYER: "bg-blue-100 text-blue-700",
+  SELLER: "bg-green-100 text-green-700",
+  DRIVER: "bg-yellow-100 text-yellow-700",
+  ADMIN: "bg-red-100 text-red-700",
+};
+
 const Navbar = () => {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, activeRole } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -57,17 +67,14 @@ const Navbar = () => {
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <>
-                {/* Cart */}
-                <Button variant="ghost" size="icon" className="relative">
+                <Button variant="ghost" size="icon">
                   <ShoppingCart className="w-5 h-5" />
                 </Button>
 
-                {/* Notifications */}
-                <Button variant="ghost" size="icon" className="relative">
+                <Button variant="ghost" size="icon">
                   <Bell className="w-5 h-5" />
                 </Button>
 
-                {/* User menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="flex items-center gap-2 px-2">
@@ -76,16 +83,25 @@ const Navbar = () => {
                           {user?.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="hidden md:block text-sm font-medium max-w-24 truncate">
-                        {user?.name}
-                      </span>
+                      <div className="hidden md:flex flex-col items-start">
+                        <span className="text-sm font-medium max-w-24 truncate leading-none">
+                          {user?.name}
+                        </span>
+                        {activeRole && (
+                          <span className={`text-xs px-1.5 rounded mt-0.5 font-medium ${roleBadgeColor[activeRole]}`}>
+                            {activeRole}
+                          </span>
+                        )}
+                      </div>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <div className="px-2 py-1.5">
+                  <DropdownMenuContent align="end" className="w-52">
+                    <DropdownMenuLabel>
                       <p className="text-sm font-medium truncate">{user?.name}</p>
-                      <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
-                    </div>
+                      <p className="text-xs text-muted-foreground truncate font-normal">
+                        {user?.email}
+                      </p>
+                    </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => navigate("/dashboard")}>
                       <LayoutDashboard className="w-4 h-4 mr-2" />
@@ -94,6 +110,10 @@ const Navbar = () => {
                     <DropdownMenuItem onClick={() => navigate("/profile")}>
                       <User className="w-4 h-4 mr-2" />
                       Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/role-select")}>
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      Switch Role
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
