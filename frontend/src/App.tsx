@@ -23,6 +23,9 @@ import CartPage from "./pages/buyer/CartPage";
 import CheckoutPage from "./pages/buyer/CheckOutPage";
 import OrdersPage from "./pages/buyer/OrderPage";
 import VoucherPage from "./pages/buyer/VoucherPage";
+import DriverDashboardPage from "./pages/driver/DriverDashboardPage";
+import AvailableJobsPage from "./pages/driver/AvailableJobsPage";
+import JobHistoryPage from "./pages/driver/JobHistoryPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -83,8 +86,11 @@ const App = () => {
                   </Route>
 
                   {/* Driver — Phase 5 */}
-                  <Route element={<RoleRoute allowedRoles={["DRIVER"]} />}>
-                  </Route>
+<Route element={<RoleRoute allowedRoles={["DRIVER"]} />}>
+  <Route path="/driver/dashboard" element={<DriverDashboardPage />} />
+  <Route path="/driver/jobs" element={<AvailableJobsPage />} />
+  <Route path="/driver/history" element={<JobHistoryPage />} />
+</Route>
 
                   {/* Admin — Phase 6 */}
                   <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>

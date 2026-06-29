@@ -10,6 +10,7 @@ import cartRoutes from "./cartRoutes";
 import orderRoutes from "./orderRoutes";
 import voucherRoutes from "./voucherRoutes";
 import reportRoutes from "./reportRoutes";
+import driverRoutes from "./driverRoutes";
 
 const router = Router();
 
@@ -24,5 +25,6 @@ router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
 router.use("/vouchers", voucherRoutes);
 router.use("/reports", reportRoutes);
+router.use("/driver", driverRoutes);
 
 export default router;
