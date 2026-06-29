@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Wallet } from "lucide-react";
+import { useCart } from "../hooks/useCart";
+import { MapPin } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,6 +42,7 @@ const Navbar = () => {
     toast.success("Logged out successfully.");
     navigate("/");
   };
+  const { itemCount } = useCart();
 
   return (
     <nav className="bg-background border-b sticky top-0 z-50 shadow-sm">
@@ -68,9 +72,14 @@ const Navbar = () => {
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <>
-                <Button variant="ghost" size="icon">
-                  <ShoppingCart className="w-5 h-5" />
-                </Button>
+<Button variant="ghost" size="icon" className="relative" onClick={() => navigate("/cart")}>
+  <ShoppingCart className="w-5 h-5" />
+  {itemCount > 0 && (
+    <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
+      {itemCount > 99 ? "99+" : itemCount}
+    </span>
+  )}
+</Button>
 
                 <Button variant="ghost" size="icon">
                   <Bell className="w-5 h-5" />
@@ -112,6 +121,14 @@ const Navbar = () => {
                     <Wallet className="w-4 h-4 mr-2" />
                       My Wallet
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/orders")}>
+  <ShoppingBag className="w-4 h-4 mr-2" />
+  My Orders
+</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/addresses")}>
+  <MapPin className="w-4 h-4 mr-2" />
+  My Addresses
+</DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/profile")}>
                       <User className="w-4 h-4 mr-2" />
                       Profile
