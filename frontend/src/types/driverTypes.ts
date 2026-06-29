@@ -1,30 +1,28 @@
-export interface DeliveryJob {
+export type DeliveryStatus =
+  | "WAITING_FOR_DRIVER"
+  | "ASSIGNED"
+  | "PICKED_UP"
+  | "DELIVERED";
+
+export interface Delivery {
   id: string;
   orderId: string;
-  driverId: string | null;
-  status: "WAITING_FOR_DRIVER" | "ASSIGNED" | "PICKED_UP" | "DELIVERED";
+  driverId?: string;
+  status: DeliveryStatus;
   fee: number;
-  pickedUpAt: string | null;
-  deliveredAt: string | null;
+  pickedUpAt?: string;
+  deliveredAt?: string;
   createdAt: string;
-  updatedAt: string;
   order: {
     id: string;
     status: string;
-    subtotal: number;
-    deliveryFee: number;
-    taxAmount: number;
     totalAmount: number;
-    notes?: string;
-    createdAt: string;
     store: {
       id: string;
       name: string;
       slug: string;
     };
     address: {
-      id: string;
-      label: string;
       recipientName: string;
       phone: string;
       street: string;
@@ -36,23 +34,18 @@ export interface DeliveryJob {
       id: string;
       productName: string;
       quantity: number;
-      price: number;
-      subtotal: number;
     }[];
-    buyer?: {
-      id: string;
-      name: string;
-      phone: string | null;
-    };
   };
-  driver?: {
-    id: string;
-    name: string;
-    phone: string | null;
-  } | null;
 }
 
 export interface DriverEarnings {
   totalEarnings: number;
-  completedJobs: number;
+  completedDeliveries: number;
+  balance: number;
+  recentEarnings: {
+    id: string;
+    amount: number;
+    description: string;
+    createdAt: string;
+  }[];
 }

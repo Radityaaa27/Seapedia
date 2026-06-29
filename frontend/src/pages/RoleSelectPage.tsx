@@ -69,21 +69,26 @@ const RoleSelectPage = () => {
   const userRoles = user?.roles.map((r) => r.role) ?? [];
 
   const handleSelect = async (role: RoleType) => {
-    if (role === activeRole) {
-      navigate("/dashboard");
-      return;
-    }
-    setLoading(role);
-    try {
-      await switchRole(role);
-      toast.success(`Switched to ${role} mode.`);
-      navigate("/dashboard");
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to switch role.");
-    } finally {
-      setLoading(null);
-    }
-  };
+  if (role === activeRole) {
+    // Redirect to the right dashboard per role
+    if (role === "DRIVER") navigate("/driver/dashboard");
+    else if (role === "SELLER") navigate("/seller/store");
+    else navigate("/dashboard");
+    return;
+  }
+   setLoading(role);
+  try {
+    await switchRole(role);
+    toast.success(`Switched to ${role} mode.`);
+    if (role === "DRIVER") navigate("/driver/dashboard");
+    else if (role === "SELLER") navigate("/seller/store");
+    else navigate("/dashboard");
+  } catch (err: any) {
+    toast.error(err.response?.data?.message || "Failed to switch role.");
+  } finally {
+    setLoading(null);
+  }
+};
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 bg-muted/30">
