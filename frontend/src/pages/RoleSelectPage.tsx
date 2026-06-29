@@ -71,9 +71,10 @@ const RoleSelectPage = () => {
   const handleSelect = async (role: RoleType) => {
   if (role === activeRole) {
     // Redirect to the right dashboard per role
-    if (role === "DRIVER") navigate("/driver/dashboard");
-    else if (role === "SELLER") navigate("/seller/store");
-    else navigate("/dashboard");
+if (role === "DRIVER") navigate("/driver/dashboard");
+else if (role === "SELLER") navigate("/seller/store");
+else if (role === "ADMIN") navigate("/admin/dashboard");
+else navigate("/dashboard");
     return;
   }
    setLoading(role);

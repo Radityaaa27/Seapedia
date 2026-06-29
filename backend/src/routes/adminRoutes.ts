@@ -1,0 +1,53 @@
+import { Router } from "express";
+import { adminController } from "../controllers/adminController";
+import { voucherController } from "../controllers/voucherController";
+import { authenticate } from "../middleware/authenticate";
+import { requireRole } from "../middleware/requireRole";
+import { asyncHandler } from "../utils/asyncHandler";
+
+const router = Router();
+
+router.use(authenticate);
+router.use(requireRole("ADMIN"));
+
+// Overview
+router.get("/overview", asyncHandler(adminController.getOverview));
+
+// Users
+router.get("/users", asyncHandler(adminController.getUsers));
+router.patch(
+  "/users/:id/toggle",
+  asyncHandler(adminController.toggleUserActive)
+);
+router.post(
+  "/users/:id/roles",
+  asyncHandler(adminController.assignRole)
+);
+
+// Overdue orders
+router.get(
+  "/orders/overdue",
+  asyncHandler(adminController.getOverdueOrders)
+);
+router.patch(
+  "/orders/:id/force-cancel",
+  asyncHandler(adminController.forceCancelOrder)
+);
+
+// Vouchers (admin)
+router.get("/vouchers", asyncHandler(voucherController.getAll));
+router.post("/vouchers", asyncHandler(voucherController.create));
+router.patch(
+  "/vouchers/:id/toggle",
+  asyncHandler(voucherController.toggle)
+);
+
+// Promos (admin)
+router.get("/promos", asyncHandler(voucherController.getAllPromos));
+router.post("/promos", asyncHandler(voucherController.createPromo));
+router.patch(
+  "/promos/:id/toggle",
+  asyncHandler(voucherController.togglePromo)
+);
+
+export default router;
