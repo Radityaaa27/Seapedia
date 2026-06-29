@@ -20,7 +20,7 @@ import { walletService } from "../../services/walletService";
 import { Wallet as WalletType } from "../../types/walletTypes";
 import { voucherService } from "../../services/voucherService";
 
-const PPN_RATE = 0.11;
+const PPN_RATE = 0.12;
 const formatRupiah = (n: number) => `Rp ${Number(n).toLocaleString("id-ID")}`;
 
 const calculateDeliveryFee = (totalWeightGrams: number) => {
@@ -341,7 +341,7 @@ const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
                   <span>{formatRupiah(deliveryFee)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax (PPN 11%)</span>
+                  <span className="text-muted-foreground">Tax (PPN 12%)</span>
                   <span>{formatRupiah(taxAmount)}</span>
                 </div>
               </div>
