@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "./contexts/AuthContext";
-import { CartProvider } from "./contexts/CartContext";
+import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
 import MainLayout from "./layouts/MainLayout";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import RoleRoute from "./components/common/RoleRoute";
@@ -16,11 +16,13 @@ import CreateStorePage from "./pages/seller/CreateStorePage";
 import MyStorePage from "./pages/seller/MyStorePage";
 import CreateProductPage from "./pages/seller/CreateProductPage";
 import SellerOrdersPage from "./pages/seller/SellerOrderPage";
+import ReportPage from "./pages/seller/ReportPage";
 import WalletPage from "./pages/buyer/WalletPage";
 import AddressPage from "./pages/buyer/AddressPage";
 import CartPage from "./pages/buyer/CartPage";
 import CheckoutPage from "./pages/buyer/CheckOutPage";
 import OrdersPage from "./pages/buyer/OrderPage";
+import VoucherPage from "./pages/buyer/VoucherPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,6 +59,7 @@ const App = () => {
                   <Route path="/checkout" element={<CheckoutPage />} />
                   <Route path="/orders" element={<OrdersPage />} />
                   <Route path="/orders/:id" element={<OrdersPage />} />
+                  <Route path="/vouchers" element={<VoucherPage />} />
                   <Route
                     path="/seller/create-store"
                     element={<CreateStorePage />}
@@ -72,6 +75,10 @@ const App = () => {
                     <Route
                       path="/seller/orders"
                       element={<SellerOrdersPage />}
+                    />
+                    <Route
+                      path="/seller/reports"
+                      element={<ReportPage />}
                     />
                   </Route>
 

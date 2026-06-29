@@ -8,6 +8,8 @@ import walletRoutes from "./walletRoutes";
 import addressRoutes from "./addressRoutes";
 import cartRoutes from "./cartRoutes";
 import orderRoutes from "./orderRoutes";
+import voucherRoutes from "./voucherRoutes";
+import reportRoutes from "./reportRoutes";
 
 const router = Router();
 
@@ -20,5 +22,7 @@ router.use("/wallet", walletRoutes);
 router.use("/addresses", addressRoutes);
 router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
+router.use("/vouchers", voucherRoutes);
+router.use("/reports", reportRoutes);
 
 export default router;
