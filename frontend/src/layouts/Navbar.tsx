@@ -1,8 +1,8 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Wallet } from "lucide-react";
 import { useCart } from "../hooks/useCart";
 import { MapPin } from "lucide-react";
@@ -21,7 +21,6 @@ import {
   Bell,
   LogOut,
   LayoutDashboard,
-  User,
   RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -36,34 +35,44 @@ const roleBadgeColor: Record<string, string> = {
 const Navbar = () => {
   const { isAuthenticated, user, logout, activeRole } = useAuth();
   const navigate = useNavigate();
+  const [navSearch, setNavSearch] = useState("");
+  const { itemCount } = useCart();
 
   const handleLogout = () => {
     logout();
     toast.success("Logged out successfully.");
     navigate("/");
   };
-  const { itemCount } = useCart();
+
+  const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && navSearch.trim()) {
+      navigate(`/products?search=${encodeURIComponent(navSearch.trim())}`);
+    }
+  };
 
   return (
-    <nav className="bg-background border-b sticky top-0 z-50 shadow-sm">
+    <nav className="bg-background/80 backdrop-blur-md border-b border-border/60 sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center shrink-0">
-            <span className="text-2xl font-bold text-orange-500">
-              SEA<span className="text-foreground">PEDIA</span>
+          <Link to="/" className="flex items-center shrink-0 group">
+            <span className="text-2xl font-black text-orange-500 tracking-tight transition-transform duration-300 group-hover:scale-[1.02]">
+              SEA<span className="text-foreground font-semibold">PEDIA</span>
             </span>
           </Link>
 
           {/* Search */}
-          <div className="hidden md:flex flex-1 max-w-xl">
-            <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <div className="relative w-full group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4 transition-colors group-focus-within:text-orange-500" />
               <input
                 type="text"
-                placeholder="Search products..."
-                className="w-full pl-9 pr-4 py-2 border border-input rounded-full text-sm bg-muted/40 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+                placeholder="Search premium marine products..."
+                value={navSearch}
+                onChange={(e) => setNavSearch(e.target.value)}
+                onKeyDown={handleSearchKeyPress}
+                className="w-full pl-9 pr-4 py-2 border border-border rounded-full text-sm bg-muted/30 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 hover:bg-muted/50 focus:bg-background"
               />
             </div>
           </div>
@@ -72,75 +81,76 @@ const Navbar = () => {
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <>
-<Button variant="ghost" size="icon" className="relative" onClick={() => navigate("/cart")}>
-  <ShoppingCart className="w-5 h-5" />
-  {itemCount > 0 && (
-    <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
-      {itemCount > 99 ? "99+" : itemCount}
-    </span>
-  )}
-</Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative transition-transform active:scale-95 hover:text-orange-500" 
+                  onClick={() => navigate("/cart")}
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                  {itemCount > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-xs rounded-full flex items-center justify-center font-bold animate-pulse-glow">
+                      {itemCount > 99 ? "99+" : itemCount}
+                    </span>
+                  )}
+                </Button>
 
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="transition-transform active:scale-95 hover:text-orange-500">
                   <Bell className="w-5 h-5" />
                 </Button>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex items-center gap-2 px-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarFallback className="bg-orange-500 text-white text-sm font-bold">
+                    <Button variant="ghost" className="flex items-center gap-2 px-2 hover:bg-muted/50 transition-colors rounded-full">
+                      <Avatar className="w-8 h-8 border border-orange-500/20">
+                        <AvatarFallback className="bg-gradient-to-tr from-orange-500 to-amber-500 text-white text-sm font-bold">
                           {user?.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="hidden md:flex flex-col items-start">
+                      <div className="hidden md:flex flex-col items-start text-left">
                         <span className="text-sm font-medium max-w-24 truncate leading-none">
                           {user?.name}
                         </span>
                         {activeRole && (
-                          <span className={`text-xs px-1.5 rounded mt-0.5 font-medium ${roleBadgeColor[activeRole]}`}>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full mt-0.5 font-medium leading-none tracking-wide ${roleBadgeColor[activeRole]}`}>
                             {activeRole}
                           </span>
                         )}
                       </div>
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-52">
+                  <DropdownMenuContent align="end" className="w-52 mt-1 glass-card">
                     <DropdownMenuLabel>
-                      <p className="text-sm font-medium truncate">{user?.name}</p>
+                      <p className="text-sm font-semibold truncate">{user?.name}</p>
                       <p className="text-xs text-muted-foreground truncate font-normal">
                         {user?.email}
                       </p>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                    <DropdownMenuItem onClick={() => navigate("/dashboard")} className="hover:bg-orange-500/10 cursor-pointer">
                       <LayoutDashboard className="w-4 h-4 mr-2" />
                       Dashboard
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/wallet")}>
-                    <Wallet className="w-4 h-4 mr-2" />
+                    <DropdownMenuItem onClick={() => navigate("/wallet")} className="hover:bg-orange-500/10 cursor-pointer">
+                      <Wallet className="w-4 h-4 mr-2" />
                       My Wallet
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/orders")}>
-  <ShoppingBag className="w-4 h-4 mr-2" />
-  My Orders
-</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/addresses")}>
-  <MapPin className="w-4 h-4 mr-2" />
-  My Addresses
-</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/profile")}>
-                      <User className="w-4 h-4 mr-2" />
-                      Profile
+                    <DropdownMenuItem onClick={() => navigate("/orders")} className="hover:bg-orange-500/10 cursor-pointer">
+                      <ShoppingBag className="w-4 h-4 mr-2" />
+                      My Orders
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate("/role-select")}>
+                    <DropdownMenuItem onClick={() => navigate("/addresses")} className="hover:bg-orange-500/10 cursor-pointer">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      My Addresses
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate("/role-select")} className="hover:bg-orange-500/10 cursor-pointer">
                       <RefreshCw className="w-4 h-4 mr-2" />
                       Switch Role
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={handleLogout}
-                      className="text-red-500 focus:text-red-500"
+                      className="text-red-500 focus:text-red-500 hover:bg-red-50 cursor-pointer"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       Logout
@@ -150,10 +160,10 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Button variant="ghost" asChild>
+                <Button variant="ghost" asChild className="hover:text-orange-500">
                   <Link to="/login">Login</Link>
                 </Button>
-                <Button asChild className="bg-orange-500 hover:bg-orange-600 rounded-full">
+                <Button asChild className="bg-orange-500 hover:bg-orange-600 text-white rounded-full transition-all duration-300 shadow-sm hover:shadow-orange-500/20 hover:shadow-lg">
                   <Link to="/register">Register</Link>
                 </Button>
               </>
