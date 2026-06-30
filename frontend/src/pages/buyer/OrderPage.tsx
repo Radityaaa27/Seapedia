@@ -8,8 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { ShoppingBag, ChevronRight, Loader2, X } from "lucide-react";
 
-const statusConfig: Record
-  OrderStatus,
+const statusConfig: Record <OrderStatus,
   { label: string; color: string }
 > = {
   PENDING_PAYMENT: { label: "Pending Payment", color: "bg-yellow-100 text-yellow-700" },

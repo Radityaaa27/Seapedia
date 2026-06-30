@@ -33,23 +33,23 @@ const CartPage = () => {
   const items = cart?.items ?? [];
 
   // Group items by store
-  const storeGroups = items.reduce(
-    (acc, item) => {
-      const storeId = item.product.store.id;
-      if (!acc[storeId]) {
-        acc[storeId] = {
-          store: item.product.store,
-          items: [],
-        };
-      }
-      acc[storeId].items.push(item);
-      return acc;
-    },
-    {} as Record
-      string,
-      { store: { id: string; name: string; slug: string }; items: typeof items }
-    >
-  );
+  interface StoreGroup {
+  store: { id: string; name: string; slug: string };
+  items: typeof items;
+}
+
+const storeGroups: Record<string, StoreGroup> = {};
+
+for (const item of items) {
+  const storeId = item.product.store.id;
+  if (!storeGroups[storeId]) {
+    storeGroups[storeId] = {
+      store: item.product.store,
+      items: [],
+    };
+  }
+  storeGroups[storeId].items.push(item);
+}
 
   const subtotal = items.reduce(
     (sum, item) => sum + Number(item.product.price) * item.quantity,

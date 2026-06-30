@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 import {
   MapPin,
   ShoppingBag,
@@ -20,24 +21,17 @@ import { walletService } from "../../services/walletService";
 import { Wallet as WalletType } from "../../types/walletTypes";
 import { voucherService } from "../../services/voucherService";
 
+interface StoreGroup {
+  store: { id: string; name: string; slug: string };
+  items: any[];
+}
+
 const PPN_RATE = 0.12;
 const formatRupiah = (n: number) => `Rp ${Number(n).toLocaleString("id-ID")}`;
 
 const calculateDeliveryFee = (totalWeightGrams: number) => {
   const base = Math.ceil(totalWeightGrams / 100) * 1000;
   return Math.max(base, 5000);
-};
-
-// Group cart items by store
-const groupByStore = (items: any[]) => {
-  return items.reduce((acc, item) => {
-    const storeId = item.product.store.id;
-    if (!acc[storeId]) {
-      acc[storeId] = { store: item.product.store, items: [] };
-    }
-    acc[storeId].items.push(item);
-    return acc;
-  }, {} as Record<string, { store: any; items: any[] }>);
 };
 
 const CheckoutPage = () => {
@@ -51,9 +45,9 @@ const CheckoutPage = () => {
   const [isPlacing, setIsPlacing] = useState(false);
   const [notes, setNotes] = useState("");
   const [voucherCode, setVoucherCode] = useState("");
-const [voucherDiscount, setVoucherDiscount] = useState(0);
-const [voucherId, setVoucherId] = useState<string | undefined>();
-const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
+  const [voucherDiscount, setVoucherDiscount] = useState(0);
+  const [voucherId, setVoucherId] = useState<string | undefined>();
+  const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -74,13 +68,22 @@ const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
     };
     init();
   }, []);
-  
 
-  const storeGroups = groupByStore(cart?.items ?? []);
-  const storeGroupList = Object.values(storeGroups);
+  // Build store groups from cart items
+  const items = cart?.items ?? [];
+  const storeGroups: Record<string, StoreGroup> = {};
 
-  // Get selected store group
-  const activeGroup = selectedStoreId
+  for (const item of items) {
+    const storeId = item.product.store.id;
+    if (!storeGroups[storeId]) {
+      storeGroups[storeId] = { store: item.product.store, items: [] };
+    }
+    storeGroups[storeId].items.push(item);
+  }
+
+  const storeGroupList: StoreGroup[] = Object.values(storeGroups);
+
+  const activeGroup: StoreGroup | undefined = selectedStoreId
     ? storeGroups[selectedStoreId]
     : storeGroupList[0];
 
@@ -88,43 +91,8 @@ const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
     if (storeGroupList.length > 0 && !selectedStoreId) {
       setSelectedStoreId(storeGroupList[0].store.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cart]);
-  const handleApplyVoucher = async () => {
-  if (!voucherCode) return;
-  setIsValidatingVoucher(true);
-  try {
-    const result = await voucherService.validateVoucher(voucherCode, subtotal);
-    setVoucherDiscount(result.discount);
-    setVoucherId(result.voucher.id);
-    toast.success(`Voucher applied! You save ${formatRupiah(result.discount)}`);
-  } catch (err: any) {
-    toast.error(err.response?.data?.message || "Invalid voucher.");
-    setVoucherDiscount(0);
-    setVoucherId(undefined);
-  } finally {
-    setIsValidatingVoucher(false);
-  }
-};
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
-      </div>
-    );
-  }
-
-  if (!cart || cart.items.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <ShoppingBag className="w-16 h-16 text-muted-foreground/20" />
-        <p className="text-muted-foreground">Your cart is empty.</p>
-        <Button onClick={() => navigate("/products")} className="bg-orange-500 hover:bg-orange-600">
-          Browse Products
-        </Button>
-      </div>
-    );
-  }
 
   // Calculate for selected store
   const activeItems = activeGroup?.items ?? [];
@@ -138,9 +106,26 @@ const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
   );
   const deliveryFee = calculateDeliveryFee(totalWeight);
   const taxAmount = Math.round(subtotal * PPN_RATE);
-const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
+  const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
   const walletBalance = Number(wallet?.balance ?? 0);
   const isBalanceSufficient = walletBalance >= totalAmount;
+
+  const handleApplyVoucher = async () => {
+    if (!voucherCode) return;
+    setIsValidatingVoucher(true);
+    try {
+      const result = await voucherService.validateVoucher(voucherCode, subtotal);
+      setVoucherDiscount(result.discount);
+      setVoucherId(result.voucher.id);
+      toast.success(`Voucher applied! You save ${formatRupiah(result.discount)}`);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Invalid voucher.");
+      setVoucherDiscount(0);
+      setVoucherId(undefined);
+    } finally {
+      setIsValidatingVoucher(false);
+    }
+  };
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress) {
@@ -180,6 +165,26 @@ const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+      </div>
+    );
+  }
+
+  if (!cart || cart.items.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <ShoppingBag className="w-16 h-16 text-muted-foreground/20" />
+        <p className="text-muted-foreground">Your cart is empty.</p>
+        <Button onClick={() => navigate("/products")} className="bg-orange-500 hover:bg-orange-600">
+          Browse Products
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-2xl font-bold text-foreground mb-6">Checkout</h1>
@@ -187,14 +192,13 @@ const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
 
-          {/* Store selector (if multiple stores in cart) */}
           {storeGroupList.length > 1 && (
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm">Select Store to Checkout</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                {storeGroupList.map((group: any) => (
+                {storeGroupList.map((group) => (
                   <button
                     key={group.store.id}
                     onClick={() => setSelectedStoreId(group.store.id)}
@@ -215,7 +219,6 @@ const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
             </Card>
           )}
 
-          {/* Delivery Address */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
@@ -266,7 +269,6 @@ const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
             </CardContent>
           </Card>
 
-          {/* Order Items */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">
@@ -305,7 +307,6 @@ const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
             </CardContent>
           </Card>
 
-          {/* Notes */}
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm">Order Notes (Optional)</CardTitle>
@@ -324,7 +325,6 @@ const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
 
         </div>
 
-        {/* Order Summary */}
         <div className="lg:col-span-1">
           <Card className="sticky top-24">
             <CardHeader className="pb-2">
@@ -345,44 +345,45 @@ const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
                   <span>{formatRupiah(taxAmount)}</span>
                 </div>
               </div>
-              {/* Voucher input */}
-<div className="border-t border-border pt-3">
-  <p className="text-xs font-medium text-foreground mb-2">Voucher Code</p>
-  <div className="flex gap-2">
-    <Input
-      placeholder="Enter code"
-      value={voucherCode}
-      onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
-      className="text-sm uppercase h-8"
-    />
-    <Button
-      size="sm"
-      variant="outline"
-      onClick={handleApplyVoucher}
-      disabled={isValidatingVoucher || !voucherCode}
-      className="shrink-0 h-8"
-    >
-      {isValidatingVoucher ? (
-        <Loader2 className="w-3 h-3 animate-spin" />
-      ) : (
-        "Apply"
-      )}
-    </Button>
-  </div>
-  {voucherDiscount > 0 && (
-    <p className="text-xs text-green-600 mt-1">
-      ✓ Discount: -{formatRupiah(voucherDiscount)}
-    </p>
-  )}
-</div>
 
-{/* Update discount row in summary */}
-{voucherDiscount > 0 && (
-  <div className="flex justify-between text-green-600">
-    <span>Voucher Discount</span>
-    <span>-{formatRupiah(voucherDiscount)}</span>
-  </div>
-)}
+              <div className="border-t border-border pt-3">
+                <p className="text-xs font-medium text-foreground mb-2">Voucher Code</p>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter code"
+                    value={voucherCode}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setVoucherCode(e.target.value.toUpperCase())
+                    }
+                    className="text-sm uppercase h-8"
+                  />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleApplyVoucher}
+                    disabled={isValidatingVoucher || !voucherCode}
+                    className="shrink-0 h-8"
+                  >
+                    {isValidatingVoucher ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      "Apply"
+                    )}
+                  </Button>
+                </div>
+                {voucherDiscount > 0 && (
+                  <p className="text-xs text-green-600 mt-1">
+                    ✓ Discount: -{formatRupiah(voucherDiscount)}
+                  </p>
+                )}
+              </div>
+
+              {voucherDiscount > 0 && (
+                <div className="flex justify-between text-green-600 text-sm">
+                  <span>Voucher Discount</span>
+                  <span>-{formatRupiah(voucherDiscount)}</span>
+                </div>
+              )}
 
               <div className="border-t border-border pt-2">
                 <div className="flex justify-between font-bold">
@@ -391,7 +392,6 @@ const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
                 </div>
               </div>
 
-              {/* Wallet balance */}
               <div
                 className={`rounded-lg p-3 text-sm ${
                   isBalanceSufficient ? "bg-green-50" : "bg-red-50"

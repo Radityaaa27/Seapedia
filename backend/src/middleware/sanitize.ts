@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import xss from "xss";
-import { array } from "zod";
 
 const sanitizeValue = (value: unknown): unknown => {
     if(typeof value === "string"){

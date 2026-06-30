@@ -3,17 +3,17 @@ import { z } from "zod";
 export const createProductSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters").max(100),
   description: z.string().max(2000).optional(),
-  price: z
-    .number({ invalid_type_error: "Price must be a number" })
-    .positive("Price must be greater than 0")
-    .max(999999999, "Price is too high"),
-  stock: z
-    .number({ invalid_type_error: "Stock must be a number" })
-    .int("Stock must be a whole number")
-    .min(0, "Stock cannot be negative"),
-  weight: z
-    .number({ invalid_type_error: "Weight must be a number" })
-    .positive("Weight must be greater than 0"),
+ price: z
+  .number()
+  .positive("Price must be greater than 0")
+  .max(999999999, "Price is too high"),
+stock: z
+  .number()
+  .int("Stock must be a whole number")
+  .min(0, "Stock cannot be negative"),
+weight: z
+  .number()
+  .positive("Weight must be greater than 0"),
   categoryId: z.string().min(1, "Category is required"),
   images: z
     .array(

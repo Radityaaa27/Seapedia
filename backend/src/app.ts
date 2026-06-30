@@ -4,7 +4,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import { errorHandler } from "./middleware/errorHandler";
 import { notFound } from "./middleware/notFound";
-import { sanitizeInput } from "./middleware/sanitize";
+import { sanitizedInput } from "./middleware/sanitize";
 import { generalLimiter, authLimiter, topUpLimiter } from "./middleware/rateLimiter";
 import routes from "./routes";
 
@@ -55,7 +55,7 @@ if (process.env.NODE_ENV === "development") {
 
 // ── Input Sanitization ─────────────────────────────────────
 // Strip XSS from all request bodies
-app.use(sanitizeInput);
+app.use(sanitizedInput);
 
 // ── Rate Limiting ──────────────────────────────────────────
 app.use("/api", generalLimiter);
