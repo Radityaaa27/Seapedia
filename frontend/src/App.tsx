@@ -28,6 +28,7 @@ import DriverJobsPage from "./pages/driver/DriverJobsPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminUsersPage from "./pages/admin/AdminUserPage";
 import AdminVouchersPage from "./pages/admin/AdminVouchersPage";
+import OrderDetailPage from "./pages/buyer/OrderDetailPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,7 +64,7 @@ const App = () => {
                   <Route path="/cart" element={<CartPage />} />
                   <Route path="/checkout" element={<CheckoutPage />} />
                   <Route path="/orders" element={<OrdersPage />} />
-                  <Route path="/orders/:id" element={<OrdersPage />} />
+                  <Route path="/orders/:id" element={<OrderDetailPage />} />
                   <Route path="/vouchers" element={<VoucherPage />} />
                   <Route
                     path="/seller/create-store"

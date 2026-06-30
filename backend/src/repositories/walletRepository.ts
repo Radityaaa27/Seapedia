@@ -26,18 +26,19 @@ export const walletRepository = {
     return { transactions, total, page, limit };
   },
 
-  // Core function — adds money and records the transaction atomically
-  topUp: async (walletId: string, amount: number, currentBalance: number) => {
+  topUp: async (
+    walletId: string,
+    amount: number,
+    currentBalance: number
+  ): Promise<{ wallet: any; transaction: any }> => {
     const newBalance = currentBalance + amount;
 
     return prisma.$transaction(async (tx) => {
-      // 1. Update wallet balance
       const wallet = await tx.wallet.update({
         where: { id: walletId },
         data: { balance: newBalance },
       });
 
-      // 2. Record the transaction for audit trail
       const transaction = await tx.walletTransaction.create({
         data: {
           walletId,
@@ -53,14 +54,13 @@ export const walletRepository = {
     });
   },
 
-  // Used by checkout — deducts balance and records payment
   deduct: async (
     walletId: string,
     amount: number,
     currentBalance: number,
     description: string,
     referenceId?: string
-  ) => {
+  ): Promise<{ wallet: any; transaction: any }> => {
     const newBalance = currentBalance - amount;
 
     return prisma.$transaction(async (tx) => {
@@ -85,7 +85,6 @@ export const walletRepository = {
     });
   },
 
-  // Used by refunds — adds money back and records it
   credit: async (
     walletId: string,
     amount: number,
@@ -93,7 +92,7 @@ export const walletRepository = {
     type: WalletTransactionType,
     description: string,
     referenceId?: string
-  ) => {
+  ): Promise<{ wallet: any; transaction: any }> => {
     const newBalance = currentBalance + amount;
 
     return prisma.$transaction(async (tx) => {

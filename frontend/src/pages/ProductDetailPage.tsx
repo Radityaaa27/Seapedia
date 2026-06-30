@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { productService } from "../services/productService";
+import { useCart } from "../hooks/useCart";
 import { Product } from "../types/productTypes";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,7 @@ const ProductDetailPage = () => {
     productSlug: string;
   }>();
   const navigate = useNavigate();
+  const { addItem } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -56,6 +58,15 @@ const ProductDetailPage = () => {
   const avgRating = product.reviews?.length
     ? product.reviews.reduce((sum, r) => sum + r.rating, 0) / product.reviews.length
     : null;
+
+    const handleAddToCart = async () => {
+  try {
+    await addItem(product!.id, quantity);
+    toast.success("Added to cart!");
+  } catch (err: any) {
+    toast.error(err.response?.data?.message || "Failed to add to cart.");
+  }
+};
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -188,11 +199,11 @@ const ProductDetailPage = () => {
             </div>
           </div>
 
-          <Button
-            className="w-full bg-orange-500 hover:bg-orange-600 mb-3"
-            disabled={product.stock === 0}
-            onClick={() => toast.info("Cart coming in Phase 3!")}
-          >
+<Button
+  className="w-full bg-orange-500 hover:bg-orange-600 mb-3"
+  disabled={product.stock === 0}
+  onClick={handleAddToCart}
+>
             <ShoppingCart className="w-4 h-4 mr-2" />
             {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
           </Button>

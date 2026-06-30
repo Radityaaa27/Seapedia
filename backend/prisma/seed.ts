@@ -1,15 +1,17 @@
-import { PrismaClient } from ".";
+import "dotenv/config";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient, Category } from "../src/generated/prisma";
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient();
-
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log("🌱 Starting seed...\n");
 
   // ── Categories ─────────────────────────────────────────
 
   console.log("📦 Seeding categories...");
-  const categories = await Promise.all([
+  const categories: Category[] = await Promise.all([
     prisma.category.upsert({
       where: { slug: "electronics" },
       update: {},
@@ -66,7 +68,6 @@ async function main() {
   console.log("👤 Seeding demo accounts...");
   const hashedPassword = await bcrypt.hash("Password123", 12);
 
-  // Admin account
   const admin = await prisma.user.upsert({
     where: { email: "admin@seapedia.com" },
     update: {},
@@ -85,7 +86,6 @@ async function main() {
     },
   });
 
-  // Buyer account
   const buyer = await prisma.user.upsert({
     where: { email: "buyer@seapedia.com" },
     update: {},
@@ -113,7 +113,6 @@ async function main() {
     },
   });
 
-  // Seller account
   const seller = await prisma.user.upsert({
     where: { email: "seller@seapedia.com" },
     update: {},
@@ -132,7 +131,6 @@ async function main() {
     },
   });
 
-  // Driver account
   const driver = await prisma.user.upsert({
     where: { email: "driver@seapedia.com" },
     update: {},
@@ -179,9 +177,8 @@ async function main() {
 
   console.log("📱 Seeding demo products...");
 
-  const electronics = categories.find((c) => c.slug === "electronics")!;
-  const fashion = categories.find((c) => c.slug === "fashion")!;
-  const food = categories.find((c) => c.slug === "food-beverage")!;
+  const electronics = categories.find((c: Category) => c.slug === "electronics")!;
+  const fashion = categories.find((c: Category) => c.slug === "fashion")!;
 
   const products = [
     {
@@ -194,16 +191,8 @@ async function main() {
       weight: 150,
       categoryId: electronics.id,
       images: [
-        {
-          url: "https://picsum.photos/seed/earbuds1/400/400",
-          isPrimary: true,
-          order: 0,
-        },
-        {
-          url: "https://picsum.photos/seed/earbuds2/400/400",
-          isPrimary: false,
-          order: 1,
-        },
+        { url: "https://picsum.photos/seed/earbuds1/400/400", isPrimary: true, order: 0 },
+        { url: "https://picsum.photos/seed/earbuds2/400/400", isPrimary: false, order: 1 },
       ],
     },
     {
@@ -216,11 +205,7 @@ async function main() {
       weight: 300,
       categoryId: electronics.id,
       images: [
-        {
-          url: "https://picsum.photos/seed/stand1/400/400",
-          isPrimary: true,
-          order: 0,
-        },
+        { url: "https://picsum.photos/seed/stand1/400/400", isPrimary: true, order: 0 },
       ],
     },
     {
@@ -233,16 +218,8 @@ async function main() {
       weight: 200,
       categoryId: electronics.id,
       images: [
-        {
-          url: "https://picsum.photos/seed/hub1/400/400",
-          isPrimary: true,
-          order: 0,
-        },
-        {
-          url: "https://picsum.photos/seed/hub2/400/400",
-          isPrimary: false,
-          order: 1,
-        },
+        { url: "https://picsum.photos/seed/hub1/400/400", isPrimary: true, order: 0 },
+        { url: "https://picsum.photos/seed/hub2/400/400", isPrimary: false, order: 1 },
       ],
     },
     {
@@ -255,11 +232,7 @@ async function main() {
       weight: 250,
       categoryId: fashion.id,
       images: [
-        {
-          url: "https://picsum.photos/seed/kaos1/400/400",
-          isPrimary: true,
-          order: 0,
-        },
+        { url: "https://picsum.photos/seed/kaos1/400/400", isPrimary: true, order: 0 },
       ],
     },
     {
@@ -272,16 +245,8 @@ async function main() {
       weight: 800,
       categoryId: electronics.id,
       images: [
-        {
-          url: "https://picsum.photos/seed/keyboard1/400/400",
-          isPrimary: true,
-          order: 0,
-        },
-        {
-          url: "https://picsum.photos/seed/keyboard2/400/400",
-          isPrimary: false,
-          order: 1,
-        },
+        { url: "https://picsum.photos/seed/keyboard1/400/400", isPrimary: true, order: 0 },
+        { url: "https://picsum.photos/seed/keyboard2/400/400", isPrimary: false, order: 1 },
       ],
     },
   ];
@@ -322,7 +287,7 @@ async function main() {
       minOrderAmount: 50000,
       maxDiscount: 25000,
       usageLimit: 100,
-      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     },
   });
 
@@ -347,7 +312,7 @@ async function main() {
       value: 18,
       maxDiscount: 50000,
       usageLimit: 200,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
   });
 
@@ -398,8 +363,7 @@ async function main() {
           userId: buyer.id,
           productId: firstProduct.id,
           rating: 5,
-          comment:
-            "Produk sangat bagus, pengiriman cepat! Recommended seller.",
+          comment: "Produk sangat bagus, pengiriman cepat! Recommended seller.",
         },
       });
     }

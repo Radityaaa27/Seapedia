@@ -4,29 +4,32 @@ import { ApiError } from "../utils/ApiError";
 
 export const voucherService = {
   // ── Vouchers ─────────────────────────────────────────────
-
-  getAllVouchers: async () => {
-    return prisma.voucher.findMany({
-      orderBy: { createdAt: "desc" },
-    });
-  },
-
+getAllVouchers: async () => {
+  return prisma.voucher.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+},
   getActiveVouchers: async () => {
-    return prisma.voucher.findMany({
-      where: {
-        isActive: true,
-        OR: [
-          { expiresAt: null },
-          { expiresAt: { gt: new Date() } },
-        ],
-        OR: [
-          { usageLimit: null },
-          { usedCount: { lt: prisma.voucher.fields.usageLimit } },
-        ],
-      },
-      orderBy: { createdAt: "desc" },
-    });
-  },
+  const allVouchers = await prisma.voucher.findMany({
+    where: {
+      isActive: true,
+      AND: [
+        {
+          OR: [
+            { expiresAt: null },
+            { expiresAt: { gt: new Date() } },
+          ],
+        },
+      ],
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  // Filter out vouchers that hit their usage limit (can't compare two columns in Prisma directly)
+  return allVouchers.filter(
+    (v) => !v.usageLimit || v.usedCount < v.usageLimit
+  );
+},
 
   validateVoucher: async (code: string, orderAmount: number) => {
     const voucher = await prisma.voucher.findUnique({

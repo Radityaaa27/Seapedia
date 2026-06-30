@@ -112,7 +112,7 @@ export const orderRepository = {
           totalAmount: data.totalAmount,
           voucherId: data.voucherId,
           notes: data.notes,
-          status: "PENDING_PAYMENT",
+          status: "PAID",
         },
       });
 
