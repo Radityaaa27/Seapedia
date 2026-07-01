@@ -29,7 +29,7 @@ import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminUsersPage from "./pages/admin/AdminUserPage";
 import AdminVouchersPage from "./pages/admin/AdminVouchersPage";
 import OrderDetailPage from "./pages/buyer/OrderDetailPage";
-
+import BuyerDashboardPage from "./pages/buyer/BuyerDashboardPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { retry: 1, staleTime: 1000 * 60 * 5 },
@@ -59,6 +59,7 @@ const App = () => {
                 <Route element={<ProtectedRoute />}>
                   <Route path="/role-select" element={<RoleSelectPage />} />
                   <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/buyer/dashboard" element={<BuyerDashboardPage />}/>
                   <Route path="/wallet" element={<WalletPage />} />
                   <Route path="/addresses" element={<AddressPage />} />
                   <Route path="/cart" element={<CartPage />} />
