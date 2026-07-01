@@ -156,37 +156,47 @@ const AdminVouchersPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+      <div className="flex flex-col items-center justify-center min-h-[70vh] gap-3">
+        <div className="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+        </div>
+        <p className="text-sm text-muted-foreground font-medium">Memuat voucher & promo...</p>
       </div>
     );
   }
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold text-foreground mb-6">
-        Vouchers & Promos
-      </h1>
+      <div className="mb-7">
+        <h1 className="text-2xl font-black text-foreground tracking-tight">
+          Vouchers & Promos
+        </h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Kelola kode diskon dan program promosi Seapedia.
+        </p>
+      </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-border mb-6">
+      <div className="flex bg-muted/50 p-1 rounded-2xl mb-6 gap-1 w-fit">
         {[
-          { key: "vouchers", label: "Vouchers", count: vouchers.length },
-          { key: "promos", label: "Promos", count: promos.length },
+          { key: "vouchers", label: "🏷️ Vouchers", count: vouchers.length },
+          { key: "promos", label: "📣 Promos", count: promos.length },
         ].map((tab) => (
           <button
             key={tab.key}
             onClick={() =>
               setActiveTab(tab.key as "vouchers" | "promos")
             }
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ${
               activeTab === tab.key
-                ? "border-orange-500 text-orange-500"
-                : "border-transparent text-muted-foreground"
+                ? "bg-white text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             {tab.label}
-            <span className="ml-2 text-xs bg-muted px-1.5 py-0.5 rounded-full">
+            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
+              activeTab === tab.key ? "bg-purple-100 text-purple-700" : "bg-muted text-muted-foreground"
+            }`}>
               {tab.count}
             </span>
           </button>

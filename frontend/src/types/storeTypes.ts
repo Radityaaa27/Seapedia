@@ -18,6 +18,7 @@ export interface StoreProduct {
   slug: string;
   price: number;
   stock: number;
+  isActive: boolean;
   images: { url: string; isPrimary: boolean }[];
 }
 

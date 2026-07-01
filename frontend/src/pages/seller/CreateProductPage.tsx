@@ -7,7 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Plus, Trash2, Package } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Package,
+  Image as ImageIcon,
+  AlertCircle,
+  ChevronLeft,
+  Star,
+} from "lucide-react";
 
 const CreateProductPage = () => {
   const navigate = useNavigate();
@@ -41,7 +49,7 @@ const CreateProductPage = () => {
 
   const addImage = () => {
     if (images.length >= 5) {
-      toast.error("Maximum 5 images allowed.");
+      toast.error("Maksimum 5 gambar diperbolehkan.");
       return;
     }
     setImages((prev) => [...prev, { url: "", isPrimary: false }]);
@@ -49,7 +57,7 @@ const CreateProductPage = () => {
 
   const removeImage = (index: number) => {
     if (images.length === 1) {
-      toast.error("At least one image is required.");
+      toast.error("Minimal satu gambar harus ada.");
       return;
     }
     setImages((prev) => prev.filter((_, i) => i !== index));
@@ -59,7 +67,7 @@ const CreateProductPage = () => {
     e.preventDefault();
     const validImages = images.filter((img) => img.url.trim() !== "");
     if (validImages.length === 0) {
-      toast.error("Please add at least one product image URL.");
+      toast.error("Tambahkan setidaknya satu URL gambar produk.");
       return;
     }
 
@@ -74,77 +82,129 @@ const CreateProductPage = () => {
         categoryId: form.categoryId,
         images: validImages,
       });
-      toast.success("Product created successfully! 🎉");
+      toast.success("🎉 Produk berhasil ditambahkan!");
       navigate("/seller/store");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to create product.");
+      toast.error(err.response?.data?.message || "Gagal membuat produk.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Check if primary image URL is valid for preview
+  const primaryImageUrl = images[0]?.url;
+  const hasPrimaryImage = primaryImageUrl && primaryImageUrl.startsWith("http");
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-          <Package className="w-5 h-5 text-orange-500" />
-        </div>
-        <div>
-          <h1 className="text-xl font-bold text-foreground">Add New Product</h1>
-          <p className="text-sm text-muted-foreground">
-            Fill in the details below to list your product.
-          </p>
+
+      {/* Back button + Header */}
+      <div className="mb-7">
+        <button
+          onClick={() => navigate("/seller/store")}
+          className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-sm font-medium mb-4 transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Kembali ke Toko
+        </button>
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center">
+            <Package className="w-6 h-6 text-orange-500" />
+          </div>
+          <div>
+            <h1 className="text-xl font-black text-foreground">Tambah Produk Baru</h1>
+            <p className="text-sm text-muted-foreground">
+              Isi detail produk yang ingin kamu jual.
+            </p>
+          </div>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
+
+        {/* Product Image Preview Card */}
+        <Card className="border-border/60 overflow-hidden">
+          <CardContent className="p-0">
+            <div className="h-44 bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center overflow-hidden relative">
+              {hasPrimaryImage ? (
+                <img
+                  src={primaryImageUrl}
+                  alt="Preview gambar utama"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+              ) : (
+                <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                  <ImageIcon className="w-12 h-12 opacity-25" />
+                  <p className="text-xs font-medium">Preview gambar utama akan tampil di sini</p>
+                </div>
+              )}
+              {hasPrimaryImage && (
+                <div className="absolute top-2 left-2 bg-black/50 text-white text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">
+                  <Star className="w-2.5 h-2.5 fill-yellow-400 text-yellow-400" />
+                  Gambar Utama
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Basic Info */}
-        <Card>
+        <Card className="border-border/60">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Product Info</CardTitle>
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              <Package className="w-4 h-4 text-orange-500" />
+              Informasi Produk
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="name">Product Name</Label>
+              <Label htmlFor="prod-name" className="text-sm font-semibold">
+                Nama Produk <span className="text-red-500">*</span>
+              </Label>
               <Input
-                id="name"
+                id="prod-name"
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="e.g. Wireless Earbuds Pro"
+                placeholder="Contoh: Udang Segar 500g"
                 required
                 minLength={3}
+                className="rounded-xl border-border/60 focus:border-orange-500"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="description">
-                Description{" "}
-                <span className="text-muted-foreground font-normal">(optional)</span>
+              <Label htmlFor="prod-desc" className="text-sm font-semibold">
+                Deskripsi{" "}
+                <span className="text-muted-foreground font-normal">(opsional)</span>
               </Label>
               <textarea
-                id="description"
+                id="prod-desc"
                 name="description"
                 value={form.description}
                 onChange={handleChange}
                 rows={4}
-                placeholder="Describe your product..."
-                className="w-full px-3 py-2 border border-input rounded-lg text-sm bg-background focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 resize-none"
+                placeholder="Ceritakan detail produkmu — ukuran, kondisi, keunggulan, dll."
+                className="w-full px-3 py-2.5 border border-input rounded-xl text-sm bg-background focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 resize-none"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="categoryId">Category</Label>
+              <Label htmlFor="prod-category" className="text-sm font-semibold">
+                Kategori <span className="text-red-500">*</span>
+              </Label>
               <select
-                id="categoryId"
+                id="prod-category"
                 name="categoryId"
                 value={form.categoryId}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 border border-input rounded-lg text-sm bg-background focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
+                className="w-full px-3 py-2.5 border border-input rounded-xl text-sm bg-background focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
               >
-                <option value="">Select a category</option>
+                <option value="">Pilih kategori produk</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
@@ -156,29 +216,39 @@ const CreateProductPage = () => {
         </Card>
 
         {/* Pricing & Inventory */}
-        <Card>
+        <Card className="border-border/60">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Pricing & Inventory</CardTitle>
+            <CardTitle className="text-sm font-bold">Harga & Inventaris</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="price">Price (Rp)</Label>
-                <Input
-                  id="price"
-                  name="price"
-                  type="number"
-                  value={form.price}
-                  onChange={handleChange}
-                  placeholder="50000"
-                  required
-                  min={1}
-                />
+                <Label htmlFor="prod-price" className="text-sm font-semibold">
+                  Harga (Rp) <span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground font-semibold">
+                    Rp
+                  </span>
+                  <Input
+                    id="prod-price"
+                    name="price"
+                    type="number"
+                    value={form.price}
+                    onChange={handleChange}
+                    placeholder="50000"
+                    required
+                    min={1}
+                    className="pl-10 rounded-xl border-border/60 focus:border-orange-500"
+                  />
+                </div>
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="stock">Stock</Label>
+                <Label htmlFor="prod-stock" className="text-sm font-semibold">
+                  Stok <span className="text-red-500">*</span>
+                </Label>
                 <Input
-                  id="stock"
+                  id="prod-stock"
                   name="stock"
                   type="number"
                   value={form.stock}
@@ -186,14 +256,17 @@ const CreateProductPage = () => {
                   placeholder="100"
                   required
                   min={0}
+                  className="rounded-xl border-border/60 focus:border-orange-500"
                 />
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="weight">Weight (grams)</Label>
+              <Label htmlFor="prod-weight" className="text-sm font-semibold">
+                Berat (gram) <span className="text-red-500">*</span>
+              </Label>
               <Input
-                id="weight"
+                id="prod-weight"
                 name="weight"
                 type="number"
                 value={form.weight}
@@ -201,35 +274,68 @@ const CreateProductPage = () => {
                 placeholder="500"
                 required
                 min={1}
+                className="rounded-xl border-border/60 focus:border-orange-500"
               />
-              <p className="text-xs text-muted-foreground">
-                Used to calculate delivery fee.
+              <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                <AlertCircle className="w-3 h-3" />
+                Berat digunakan untuk menghitung ongkos kirim.
               </p>
             </div>
           </CardContent>
         </Card>
 
         {/* Images */}
-        <Card>
+        <Card className="border-border/60">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Product Images</CardTitle>
+            <CardTitle className="text-sm font-bold flex items-center justify-between">
+              <span>Gambar Produk</span>
+              <span className="text-muted-foreground font-normal text-xs">
+                {images.length}/5 gambar
+              </span>
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {images.map((img, index) => (
-              <div key={index} className="flex items-center gap-2">
-                <Input
-                  placeholder={`Image URL ${index + 1}${index === 0 ? " (primary)" : ""}`}
-                  value={img.url}
-                  onChange={(e) => handleImageChange(index, e.target.value)}
-                  className="flex-1"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeImage(index)}
-                  className="text-red-400 hover:text-red-600 p-1 shrink-0"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+              <div key={index} className="space-y-2">
+                <div className="flex items-center gap-2">
+                  {/* Thumbnail preview */}
+                  <div className="w-10 h-10 bg-muted rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-border/60">
+                    {img.url && img.url.startsWith("http") ? (
+                      <img
+                        src={img.url}
+                        alt={`Gambar ${index + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = "";
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <ImageIcon className="w-4 h-4 text-muted-foreground/40" />
+                    )}
+                  </div>
+                  <Input
+                    placeholder={`URL Gambar ${index + 1}${index === 0 ? " (utama)" : ""}`}
+                    value={img.url}
+                    onChange={(e) => handleImageChange(index, e.target.value)}
+                    className="flex-1 rounded-xl border-border/60 focus:border-orange-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="text-muted-foreground hover:text-red-500 p-1.5 shrink-0 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+                {index === 0 && (
+                  <div className="flex items-center gap-1.5 ml-12">
+                    <Star className="w-3 h-3 text-yellow-500 fill-yellow-400" />
+                    <span className="text-[10px] text-muted-foreground font-medium">
+                      Gambar utama (tampil pertama di toko)
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
 
@@ -239,32 +345,44 @@ const CreateProductPage = () => {
                 variant="outline"
                 size="sm"
                 onClick={addImage}
-                className="w-full border-dashed"
+                className="w-full border-dashed rounded-xl border-border/60 hover:border-orange-400 hover:text-orange-500"
               >
-                <Plus className="w-4 h-4 mr-1" /> Add Image URL
+                <Plus className="w-4 h-4 mr-1.5" />
+                Tambah Gambar
               </Button>
             )}
             <p className="text-xs text-muted-foreground">
-              Paste direct image URLs. First image will be the primary display image.
+              Paste URL gambar langsung (https://...). Gambar pertama akan jadi tampilan utama produk.
             </p>
           </CardContent>
         </Card>
 
-        <div className="flex gap-3">
+        {/* Submit */}
+        <div className="flex gap-3 pb-6">
           <Button
             type="button"
             variant="outline"
-            className="flex-1"
+            className="flex-1 rounded-xl"
             onClick={() => navigate("/seller/store")}
           >
-            Cancel
+            Batal
           </Button>
           <Button
             type="submit"
             disabled={isLoading}
-            className="flex-1 bg-orange-500 hover:bg-orange-600"
+            className="flex-1 bg-orange-500 hover:bg-orange-600 rounded-xl font-bold"
           >
-            {isLoading ? "Creating..." : "Create Product"}
+            {isLoading ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
+                Menyimpan...
+              </>
+            ) : (
+              <>
+                <Plus className="w-4 h-4 mr-1.5" />
+                Tambah Produk
+              </>
+            )}
           </Button>
         </div>
       </form>

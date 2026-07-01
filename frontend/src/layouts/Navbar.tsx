@@ -35,7 +35,7 @@ const roleBadgeColor: Record<string, string> = {
 const Navbar = () => {
   const { isAuthenticated, user, logout, activeRole } = useAuth();
   const navigate = useNavigate();
-  const [navSearch, setNavSearch] = useState("");
+const [searchQuery, setSearchQuery] = useState("");
   const { itemCount } = useCart();
 
   const handleLogout = () => {
@@ -44,11 +44,12 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && navSearch.trim()) {
-      navigate(`/products?search=${encodeURIComponent(navSearch.trim())}`);
-    }
-  };
+const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === "Enter" && searchQuery.trim()) {
+    navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    setSearchQuery("");
+  }
+};
 
   return (
     <nav className="bg-background/80 backdrop-blur-md border-b border-border/60 sticky top-0 z-50 transition-all duration-300">
@@ -67,13 +68,13 @@ const Navbar = () => {
             <div className="relative w-full group">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4 transition-colors group-focus-within:text-orange-500" />
               <input
-                type="text"
-                placeholder="Search premium marine products..."
-                value={navSearch}
-                onChange={(e) => setNavSearch(e.target.value)}
-                onKeyDown={handleSearchKeyPress}
-                className="w-full pl-9 pr-4 py-2 border border-border rounded-full text-sm bg-muted/30 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all duration-300 hover:bg-muted/50 focus:bg-background"
-              />
+  type="text"
+  placeholder="Search products..."
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+  onKeyDown={handleSearch}
+  className="w-full pl-9 pr-4 py-2 border border-input rounded-full text-sm bg-muted/40 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-colors"
+/>
             </div>
           </div>
 

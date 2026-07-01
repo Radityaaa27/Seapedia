@@ -24,6 +24,10 @@ export const adminService = {
     return res.data.data;
   },
 
+  deleteUser: async (userId: string): Promise<void> => {
+    await api.delete(`/admin/users/${userId}`);
+  },
+
   assignRole: async (userId: string, role: string) => {
     const res = await api.post(`/admin/users/${userId}/roles`, { role });
     return res.data.data;
