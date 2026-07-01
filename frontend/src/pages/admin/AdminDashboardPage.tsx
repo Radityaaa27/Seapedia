@@ -116,7 +116,7 @@ const AdminDashboardPage = () => {
       border: "border-orange-100",
     },
     {
-      label: "Total Revenue",
+      label: "Revenue (Completed)",
       value: formatRupiah(stats.totalRevenue),
       sub: `${formatRupiah(stats.thisMonthRevenue)} bulan ini`,
       icon: DollarSign,
@@ -148,6 +148,7 @@ const AdminDashboardPage = () => {
       color: "bg-red-500 hover:bg-red-600",
       path: "/admin/orders/overdue",
     },
+    
   ];
 
   return (

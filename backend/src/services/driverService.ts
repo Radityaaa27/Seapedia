@@ -96,7 +96,6 @@ export const driverService = {
         },
       });
 
-      // Update order status
   // Update order status
       await tx.order.update({
         where: { id: delivery.orderId },
@@ -180,6 +179,17 @@ export const driverService = {
         "DELIVERED",
         "Order delivered to buyer's address."
       );
+      const driverWallet = await walletRepository.findByUserId(driverId);
+      if (driverWallet) {
+        await walletRepository.credit(
+          driverWallet.id,
+          Number(delivery.fee),
+          Number(driverWallet.balance),
+          WalletTransactionType.EARNING,
+          `Order delivery earnings #${delivery.orderId.slice(0.8).toUpperCase()}`,
+          delivery.orderId
+        );
+      }
 
       // 4. Notify buyer
       await tx.notification.create({

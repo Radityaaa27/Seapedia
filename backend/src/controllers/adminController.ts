@@ -62,4 +62,9 @@ export const adminController = {
     const result = await adminService.runOverdueCheck();
     res.json(ApiResponse.success("Overdue check completed.", result));
   },
+  //overdue check
+  runOverdueCheck: async (_req: Request, res: Response) => {
+  const result = await adminService.runOverdueCheck();
+  res.json(ApiResponse.success("Overdue check completed.", result));
+},
 };

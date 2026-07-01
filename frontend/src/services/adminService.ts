@@ -72,4 +72,8 @@ export const adminService = {
     const res = await api.patch(`/admin/promos/${id}/toggle`);
     return res.data.data;
   },
+  runOverdueCheck: async () => {
+    const res = await api.post("/admin/orders/run-overdue-check");
+    return res.data.data;
+  },
 };

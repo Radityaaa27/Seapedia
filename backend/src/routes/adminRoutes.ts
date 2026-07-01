@@ -56,4 +56,10 @@ router.patch(
   asyncHandler(voucherController.togglePromo)
 );
 
+//Overdue Check (admin)
+router.post(
+  "/orders/run-overdue-check",
+  asyncHandler(adminController.runOverdueCheck)
+)
+
 export default router;

@@ -30,6 +30,7 @@ import AdminUsersPage from "./pages/admin/AdminUserPage";
 import AdminVouchersPage from "./pages/admin/AdminVouchersPage";
 import OrderDetailPage from "./pages/buyer/OrderDetailPage";
 import BuyerDashboardPage from "./pages/buyer/BuyerDashboardPage";
+import AdminOverduePage from "./pages/admin/AdminOverduePage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { retry: 1, staleTime: 1000 * 60 * 5 },
@@ -115,6 +116,7 @@ const App = () => {
                       path="/admin/vouchers"
                       element={<AdminVouchersPage />}
                     />
+                    <Route path="/admin/orders/overdue" element={<AdminOverduePage />} />
                   </Route>
                 </Route>
 
