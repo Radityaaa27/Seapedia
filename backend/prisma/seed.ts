@@ -249,6 +249,91 @@ async function main() {
         { url: "https://picsum.photos/seed/keyboard2/400/400", isPrimary: false, order: 1 },
       ],
     },
+    {
+  name: "Cotton Hoodie Premium",
+  slug: "cotton-hoodie-premium",
+  description: "Hoodie tebal bahan cotton fleece premium, cocok untuk cuaca dingin. Tersedia 8 warna.",
+  price: 185000,
+  stock: 80,
+  weight: 400,
+  categoryId: fashion.id,
+  images: [
+    { url: "https://picsum.photos/seed/hoodie1/400/400", isPrimary: true, order: 0 },
+  ],
+},
+{
+  name: "Running Shoes ProFit",
+  slug: "running-shoes-profit",
+  description: "Sepatu lari ringan dengan sol anti-slip dan ventilasi premium. Cocok untuk trail dan road running.",
+  price: 425000,
+  stock: 45,
+  weight: 600,
+  categoryId: categories.find((c) => c.slug === "sports")!.id,
+  images: [
+    { url: "https://picsum.photos/seed/shoes1/400/400", isPrimary: true, order: 0 },
+    { url: "https://picsum.photos/seed/shoes2/400/400", isPrimary: false, order: 1 },
+  ],
+},
+{
+  name: "Buku Clean Code",
+  slug: "buku-clean-code",
+  description: "Buku wajib setiap programmer. Panduan menulis kode yang bersih, mudah dibaca, dan maintainable.",
+  price: 120000,
+  stock: 30,
+  weight: 350,
+  categoryId: categories.find((c) => c.slug === "books")!.id,
+  images: [
+    { url: "https://picsum.photos/seed/book1/400/400", isPrimary: true, order: 0 },
+  ],
+},
+{
+  name: "Skincare Paket Lengkap",
+  slug: "skincare-paket-lengkap",
+  description: "Paket skincare 5 produk: cleanser, toner, serum, moisturizer, dan sunscreen SPF 50.",
+  price: 299000,
+  stock: 60,
+  weight: 500,
+  categoryId: categories.find((c) => c.slug === "beauty")!.id,
+  images: [
+    { url: "https://picsum.photos/seed/skincare1/400/400", isPrimary: true, order: 0 },
+  ],
+},
+{
+  name: "Mie Instan Artisan Pack",
+  slug: "mie-instan-artisan-pack",
+  description: "Paket 10 bungkus mie instan premium dengan berbagai varian rasa nusantara.",
+  price: 55000,
+  stock: 150,
+  weight: 800,
+  categoryId: categories.find((c) => c.slug === "food-beverage")!.id,
+  images: [
+    { url: "https://picsum.photos/seed/mie1/400/400", isPrimary: true, order: 0 },
+  ],
+},
+{
+  name: "LED Desk Lamp Smart",
+  slug: "led-desk-lamp-smart",
+  description: "Lampu meja LED dengan kontrol sentuh, 3 mode warna, dan port USB charging.",
+  price: 149000,
+  stock: 40,
+  weight: 700,
+  categoryId: categories.find((c) => c.slug === "home-living")!.id,
+  images: [
+    { url: "https://picsum.photos/seed/lamp1/400/400", isPrimary: true, order: 0 },
+  ],
+},
+{
+  name: "LEGO Classic Creative Bricks",
+  slug: "lego-classic-creative-bricks",
+  description: "Set LEGO 500 pieces untuk kreasi bebas. Cocok untuk anak usia 4-12 tahun.",
+  price: 320000,
+  stock: 25,
+  weight: 900,
+  categoryId: categories.find((c) => c.slug === "toys")!.id,
+  images: [
+    { url: "https://picsum.photos/seed/lego1/400/400", isPrimary: true, order: 0 },
+  ],
+},
   ];
 
   for (const p of products) {
