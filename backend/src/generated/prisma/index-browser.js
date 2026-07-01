@@ -241,6 +241,7 @@ exports.Prisma.OrderScalarFieldEnum = {
   storeId: 'storeId',
   addressId: 'addressId',
   status: 'status',
+  deliveryMethod: 'deliveryMethod',
   subtotal: 'subtotal',
   deliveryFee: 'deliveryFee',
   taxAmount: 'taxAmount',
@@ -262,6 +263,14 @@ exports.Prisma.OrderItemScalarFieldEnum = {
   price: 'price',
   quantity: 'quantity',
   subtotal: 'subtotal'
+};
+
+exports.Prisma.OrderStatusHistoryScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  status: 'status',
+  note: 'note',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.DeliveryScalarFieldEnum = {
@@ -359,7 +368,14 @@ exports.OrderStatus = exports.$Enums.OrderStatus = {
   DELIVERED: 'DELIVERED',
   COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED',
-  REFUNDED: 'REFUNDED'
+  REFUNDED: 'REFUNDED',
+  RETURNED: 'RETURNED'
+};
+
+exports.DeliveryMethod = exports.$Enums.DeliveryMethod = {
+  INSTANT: 'INSTANT',
+  NEXT_DAY: 'NEXT_DAY',
+  REGULAR: 'REGULAR'
 };
 
 exports.DeliveryStatus = exports.$Enums.DeliveryStatus = {
@@ -393,6 +409,7 @@ exports.Prisma.ModelName = {
   CartItem: 'CartItem',
   Order: 'Order',
   OrderItem: 'OrderItem',
+  OrderStatusHistory: 'OrderStatusHistory',
   Delivery: 'Delivery',
   Voucher: 'Voucher',
   Promo: 'Promo',

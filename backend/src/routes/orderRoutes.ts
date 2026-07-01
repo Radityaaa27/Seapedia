@@ -28,6 +28,11 @@ router.patch(
   requireRole("BUYER"),
   asyncHandler(orderController.cancelOrder)
 );
+router.patch(
+  "/:id/confirm",
+  requireRole("BUYER"),
+  asyncHandler(orderController.confirmReceipt)
+);
 
 // Seller routes
 router.get(

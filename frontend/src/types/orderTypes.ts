@@ -9,7 +9,10 @@ export type OrderStatus =
   | "DELIVERED"
   | "COMPLETED"
   | "CANCELLED"
-  | "REFUNDED";
+  | "REFUNDED"
+  | "RETURNED";
+
+export type DeliveryMethod = "INSTANT" | "NEXT_DAY" | "REGULAR";
 
 export interface OrderItem {
   id: string;
@@ -21,11 +24,19 @@ export interface OrderItem {
   subtotal: number;
 }
 
+export interface OrderStatusHistoryEntry {
+  id: string;
+  status: OrderStatus;
+  note?: string;
+  createdAt: string;
+}
+
 export interface Order {
   id: string;
   buyerId: string;
   storeId: string;
   status: OrderStatus;
+  deliveryMethod: DeliveryMethod;
   subtotal: number;
   deliveryFee: number;
   taxAmount: number;
@@ -48,11 +59,13 @@ export interface Order {
     fee: number;
     driverId?: string;
   };
+  statusHistory: OrderStatusHistoryEntry[];
 }
 
 export interface CreateOrderInput {
   addressId: string;
   storeId: string;
+  deliveryMethod: DeliveryMethod;
   items: {
     cartItemId: string;
     productId: string;

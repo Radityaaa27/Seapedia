@@ -97,20 +97,20 @@ export const driverService = {
       });
 
       // Update order status
+  // Update order status
       await tx.order.update({
         where: { id: delivery.orderId },
         data: { status: "ON_DELIVERY" },
       });
 
-      // Notify buyer
-      await tx.notification.create({
-        data: {
-          userId: delivery.order.buyerId,
-          title: "Your order is on the way!",
-          message: "A driver has picked up your order and is heading to you.",
-          link: `/orders/${delivery.orderId}`,
-        },
-      });
+      // Record status history
+      const { orderRepository } = await import("../repositories/orderRepository");
+      await orderRepository.appendStatusHistory(
+        tx,
+        delivery.orderId,
+        "ON_DELIVERY",
+        "Driver picked up the order and is heading to buyer."
+      );
 
       return updated;
     });
@@ -172,18 +172,14 @@ export const driverService = {
         data: { status: "DELIVERED" },
       });
 
-      // 3. Credit driver wallet with delivery fee
-      const wallet = await walletRepository.findByUserId(driverId);
-      if (wallet) {
-        await walletRepository.credit(
-          wallet.id,
-          Number(delivery.fee),
-          Number(wallet.balance),
-          WalletTransactionType.EARNING,
-          `Delivery earning for order #${delivery.orderId.slice(0, 8).toUpperCase()}`,
-          delivery.orderId
-        );
-      }
+      // Record status history
+      const { orderRepository } = await import("../repositories/orderRepository");
+      await orderRepository.appendStatusHistory(
+        tx,
+        delivery.orderId,
+        "DELIVERED",
+        "Order delivered to buyer's address."
+      );
 
       // 4. Notify buyer
       await tx.notification.create({

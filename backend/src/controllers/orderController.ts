@@ -48,6 +48,15 @@ export const orderController = {
     res.json(ApiResponse.success("Order cancelled. Refund processed.", order));
   },
 
+  confirmReceipt: async (req: Request, res: Response) => {
+    const userId = (req as any).user.userId;
+    const orderId = Array.isArray(req.params.id)
+      ? req.params.id[0]
+      : req.params.id;
+    const order = await orderService.confirmReceipt(userId, orderId);
+    res.json(ApiResponse.success("Order marked as completed. Thank you!", order));
+  },
+
   getSellerOrders: async (req: Request, res: Response) => {
     const userId = (req as any).user.userId;
     const page = Number(req.query.page) || 1;

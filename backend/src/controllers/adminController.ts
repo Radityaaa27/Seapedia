@@ -54,4 +54,12 @@ export const adminController = {
     const order = await adminService.forceCancelOrder(orderId);
     res.json(ApiResponse.success("Order refunded.", order));
   },
+
+  // Manual trigger for the overdue job. Represents "simulating the next
+  // day" so overdue orders (based on their delivery method's deadline)
+  // get auto-refunded or auto-returned without waiting for a real cron.
+  simulateNextDay: async (_req: Request, res: Response) => {
+    const result = await adminService.runOverdueCheck();
+    res.json(ApiResponse.success("Overdue check completed.", result));
+  },
 };

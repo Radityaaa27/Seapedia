@@ -34,6 +34,12 @@ router.patch(
   asyncHandler(adminController.forceCancelOrder)
 );
 
+// Simulate next day (manual trigger for the auto refund/return job)
+router.post(
+  "/simulate-next-day",
+  asyncHandler(adminController.simulateNextDay)
+);
+
 // Vouchers (admin)
 router.get("/vouchers", asyncHandler(voucherController.getAll));
 router.post("/vouchers", asyncHandler(voucherController.create));

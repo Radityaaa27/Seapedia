@@ -61,8 +61,8 @@ export const orderService = {
       });
     }
 
-    // 4. Calculate fees
-    const deliveryFee = calculateDeliveryFee(totalWeightGrams);
+    // 4. Calculate fees (delivery fee depends on chosen delivery method)
+    const deliveryFee = calculateDeliveryFee(totalWeightGrams, input.deliveryMethod);
     const taxAmount = Math.round(subtotal * PPN_RATE);
 
     // 5. Apply voucher discount if provided
@@ -118,6 +118,7 @@ export const orderService = {
       buyerId: userId,
       storeId: input.storeId,
       addressId: input.addressId,
+      deliveryMethod: input.deliveryMethod,
       items: orderItems,
       subtotal,
       deliveryFee,
@@ -209,7 +210,31 @@ export const orderService = {
       });
     }
 
-    return orderRepository.updateStatus(orderId, "CANCELLED");
+    return orderRepository.updateStatus(
+      orderId,
+      "CANCELLED",
+      "Cancelled by buyer, refunded to wallet."
+    );
+  },
+
+  // Buyer confirms the order was received, closing the main lifecycle
+  // (DELIVERED -> COMPLETED / "Pesanan Selesai").
+  confirmReceipt: async (userId: string, orderId: string) => {
+    const order = await orderRepository.findById(orderId);
+    if (!order) throw ApiError.notFound("Order not found.");
+    if (order.buyerId !== userId) throw ApiError.forbidden("Not your order.");
+
+    if (order.status !== "DELIVERED") {
+      throw ApiError.badRequest(
+        "Order must be DELIVERED before it can be marked as completed."
+      );
+    }
+
+    return orderRepository.updateStatus(
+      orderId,
+      "COMPLETED",
+      "Buyer confirmed receipt of the order."
+    );
   },
 
   // Seller actions
@@ -230,7 +255,11 @@ export const orderService = {
       throw ApiError.badRequest("Order must be PAID before processing.");
     }
 
-    return orderRepository.updateStatus(orderId, "PROCESSING");
+    return orderRepository.updateStatus(
+      orderId,
+      "PROCESSING",
+      "Seller started processing the order."
+    );
   },
 
   markReadyForPickup: async (userId: string, orderId: string) => {
@@ -246,6 +275,10 @@ export const orderService = {
       throw ApiError.badRequest("Order must be PROCESSING first.");
     }
 
-    return orderRepository.updateStatus(orderId, "READY_FOR_PICKUP");
+    return orderRepository.updateStatus(
+      orderId,
+      "READY_FOR_PICKUP",
+      "Seller packed the order, waiting for driver."
+    );
   },
 };

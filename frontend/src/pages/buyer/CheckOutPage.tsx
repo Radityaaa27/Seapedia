@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { DeliveryMethod } from "@/types/orderTypes";
 import {
   MapPin,
   ShoppingBag,
@@ -16,6 +17,7 @@ import {
   ChevronRight,
   Loader2,
   Plus,
+  Truck,
 } from "lucide-react";
 import { walletService } from "../../services/walletService";
 import { Wallet as WalletType } from "../../types/walletTypes";
@@ -29,9 +31,22 @@ interface StoreGroup {
 const PPN_RATE = 0.12;
 const formatRupiah = (n: number) => `Rp ${Number(n).toLocaleString("id-ID")}`;
 
-const calculateDeliveryFee = (totalWeightGrams: number) => {
+const DELIVERY_OPTIONS: { value: DeliveryMethod; label: string; note: string }[] = [
+  { value: "INSTANT", label: "Instant", note: "Sampai hari ini juga, biaya paling tinggi" },
+  { value: "NEXT_DAY", label: "Next Day", note: "Sampai besok" },
+  { value: "REGULAR", label: "Regular", note: "2-4 hari, biaya paling hemat" },
+];
+
+const baseFeeByWeight = (totalWeightGrams: number) => {
   const base = Math.ceil(totalWeightGrams / 100) * 1000;
   return Math.max(base, 5000);
+};
+
+const calculateDeliveryFee = (totalWeightGrams: number, method: DeliveryMethod) => {
+  const base = baseFeeByWeight(totalWeightGrams);
+  if (method === "INSTANT") return base + 15000;
+  if (method === "NEXT_DAY") return base + 5000;
+  return base;
 };
 
 const CheckoutPage = () => {
@@ -48,6 +63,7 @@ const CheckoutPage = () => {
   const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [voucherId, setVoucherId] = useState<string | undefined>();
   const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("REGULAR");
 
   useEffect(() => {
     const init = async () => {
@@ -104,7 +120,7 @@ const CheckoutPage = () => {
     (sum: number, item: any) => sum + Number(item.product.weight) * item.quantity,
     0
   );
-  const deliveryFee = calculateDeliveryFee(totalWeight);
+  const deliveryFee = calculateDeliveryFee(totalWeight, deliveryMethod);
   const taxAmount = Math.round(subtotal * PPN_RATE);
   const totalAmount = subtotal + deliveryFee + taxAmount - voucherDiscount;
   const walletBalance = Number(wallet?.balance ?? 0);
@@ -146,6 +162,7 @@ const CheckoutPage = () => {
       const order = await orderService.createOrder({
         addressId: selectedAddress,
         storeId: activeGroup.store.id,
+        deliveryMethod,
         items: activeItems.map((item: any) => ({
           cartItemId: item.id,
           productId: item.product.id,
@@ -271,6 +288,37 @@ const CheckoutPage = () => {
 
           <Card>
             <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Truck className="w-4 h-4 text-orange-500" />
+                Delivery Method
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              {DELIVERY_OPTIONS.map((opt) => {
+                const fee = calculateDeliveryFee(totalWeight, opt.value);
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => setDeliveryMethod(opt.value)}
+                    className={`text-left p-3 rounded-lg border-2 transition-colors ${
+                      deliveryMethod === opt.value
+                        ? "border-orange-500 bg-orange-50"
+                        : "border-border hover:border-orange-300"
+                    }`}
+                  >
+                    <p className="text-sm font-semibold">{opt.label}</p>
+                    <p className="text-xs text-muted-foreground">{opt.note}</p>
+                    <p className="text-xs font-medium text-orange-500 mt-1">
+                      {formatRupiah(fee)}
+                    </p>
+                  </button>
+                );
+              })}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
               <CardTitle className="text-sm">
                 Items from {activeGroup?.store.name}
               </CardTitle>
@@ -337,7 +385,9 @@ const CheckoutPage = () => {
                   <span>{formatRupiah(subtotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Delivery Fee</span>
+                  <span className="text-muted-foreground">
+                    Delivery Fee ({DELIVERY_OPTIONS.find((o) => o.value === deliveryMethod)?.label})
+                  </span>
                   <span>{formatRupiah(deliveryFee)}</span>
                 </div>
                 <div className="flex justify-between">

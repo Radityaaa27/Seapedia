@@ -1,5 +1,9 @@
 import { prisma } from "../lib/prisma";
-import { OrderStatus } from "../generated/prisma";
+import { OrderStatus, DeliveryMethod, Prisma } from "../generated/prisma";
+
+const statusHistoryInclude = {
+  orderBy: { createdAt: "asc" as const },
+};
 
 export const orderRepository = {
   findByBuyer: async (buyerId: string, page = 1, limit = 10) => {
@@ -17,6 +21,7 @@ export const orderRepository = {
             },
           },
           delivery: true,
+          statusHistory: statusHistoryInclude,
         },
         orderBy: { createdAt: "desc" },
         skip,
@@ -48,6 +53,7 @@ export const orderRepository = {
           },
           address: true,
           delivery: true,
+          statusHistory: statusHistoryInclude,
         },
         orderBy: { createdAt: "desc" },
         skip,
@@ -74,6 +80,7 @@ export const orderRepository = {
         },
         delivery: true,
         voucher: true,
+        statusHistory: statusHistoryInclude,
       },
     });
   },
@@ -82,6 +89,7 @@ export const orderRepository = {
     buyerId: string;
     storeId: string;
     addressId: string;
+    deliveryMethod: DeliveryMethod;
     items: {
       productId: string;
       productName: string;
@@ -105,6 +113,7 @@ export const orderRepository = {
           buyerId: data.buyerId,
           storeId: data.storeId,
           addressId: data.addressId,
+          deliveryMethod: data.deliveryMethod,
           subtotal: data.subtotal,
           deliveryFee: data.deliveryFee,
           taxAmount: data.taxAmount,
@@ -129,12 +138,15 @@ export const orderRepository = {
         })),
       });
 
-      // 3. Reduce stock for each product
+      // 3. Reduce stock for each product (never below zero)
       for (const item of data.items) {
-        await tx.product.update({
-          where: { id: item.productId },
+        const updated = await tx.product.updateMany({
+          where: { id: item.productId, stock: { gte: item.quantity } },
           data: { stock: { decrement: item.quantity } },
         });
+        if (updated.count === 0) {
+          throw new Error(`Insufficient stock while creating order for product ${item.productId}`);
+        }
       }
 
       // 4. Create delivery record
@@ -146,6 +158,15 @@ export const orderRepository = {
         },
       });
 
+      // 5. Record initial status history entry
+      await tx.orderStatusHistory.create({
+        data: {
+          orderId: order.id,
+          status: "PAID",
+          note: "Order placed and paid from wallet.",
+        },
+      });
+
       return tx.order.findUnique({
         where: { id: order.id },
         include: {
@@ -153,15 +174,36 @@ export const orderRepository = {
           delivery: true,
           store: { select: { id: true, name: true } },
           address: true,
+          statusHistory: statusHistoryInclude,
         },
       });
     });
   },
 
-  updateStatus: async (id: string, status: OrderStatus) => {
-    return prisma.order.update({
-      where: { id },
-      data: { status },
+  updateStatus: async (id: string, status: OrderStatus, note?: string) => {
+    return prisma.$transaction(async (tx) => {
+      const order = await tx.order.update({
+        where: { id },
+        data: { status },
+      });
+      await tx.orderStatusHistory.create({
+        data: { orderId: id, status, note },
+      });
+      return order;
+    });
+  },
+
+  // Helper for other services that already hold a transaction client
+  // (e.g. driverService, adminService) so status changes made inside
+  // their own transactions are still logged to history.
+  appendStatusHistory: async (
+    tx: Prisma.TransactionClient,
+    orderId: string,
+    status: OrderStatus,
+    note?: string
+  ) => {
+    return tx.orderStatusHistory.create({
+      data: { orderId, status, note },
     });
   },
 };
