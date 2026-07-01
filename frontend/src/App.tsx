@@ -31,6 +31,7 @@ import AdminVouchersPage from "./pages/admin/AdminVouchersPage";
 import OrderDetailPage from "./pages/buyer/OrderDetailPage";
 import BuyerDashboardPage from "./pages/buyer/BuyerDashboardPage";
 import AdminOverduePage from "./pages/admin/AdminOverduePage";
+import StoreDetailPage from "./pages/StoreDetailPage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { retry: 1, staleTime: 1000 * 60 * 5 },
@@ -55,6 +56,7 @@ const App = () => {
                   path="/products/:storeSlug/:productSlug"
                   element={<ProductDetailPage />}
                 />
+                <Route path="/store/:slug" element={<StoreDetailPage />} />
 
                 {/* Protected */}
                 <Route element={<ProtectedRoute />}>

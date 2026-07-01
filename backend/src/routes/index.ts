@@ -12,6 +12,7 @@ import voucherRoutes from "./voucherRoutes";
 import reportRoutes from "./reportRoutes";
 import driverRoutes from "./driverRoutes";
 import adminRoutes from "./adminRoutes";
+import reviewRoutes from "./reviewRoutes";
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use("/vouchers", voucherRoutes);
 router.use("/reports", reportRoutes);
 router.use("/driver", driverRoutes);
 router.use("/admin", adminRoutes);
+router.use("/reviews", reviewRoutes);
 
 export default router;

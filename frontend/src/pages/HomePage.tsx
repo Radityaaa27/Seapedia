@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { productService } from "../services/productService";
 import { Product } from "../types/productTypes";
 import ProductCard from "../components/product/ProductCard";
+import ReviewSection from "../components/common/ReviewSection";
 import {
   ShoppingBag,
   Shield,
@@ -377,7 +378,7 @@ const HomePage = () => {
           </div>
         )}
       </section>
-
+      <ReviewSection/>
     </div>
   );
 };

@@ -81,6 +81,7 @@ model User {
   isActive      Boolean   @default(true)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  appReviews    AppReview[]
 
   // Relations
   roles         UserRole[]
@@ -413,6 +414,19 @@ model Review {
   @@map("reviews")
 }
 
+model AppReview {
+  id String @id @default(cuid())
+  userId String?
+  reviewerName String
+  rating Int  //1-5
+  comment String
+  isPublished Boolean @default(true)
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("app_reviews")
+}
 // =============================================================
 // NOTIFICATIONS
 // =============================================================

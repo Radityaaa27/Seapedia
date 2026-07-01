@@ -104,6 +104,11 @@ export type Promo = $Result.DefaultSelection<Prisma.$PromoPayload>
  */
 export type Review = $Result.DefaultSelection<Prisma.$ReviewPayload>
 /**
+ * Model AppReview
+ * 
+ */
+export type AppReview = $Result.DefaultSelection<Prisma.$AppReviewPayload>
+/**
  * Model Notification
  * 
  */
@@ -513,6 +518,16 @@ export class PrismaClient<
     * ```
     */
   get review(): Prisma.ReviewDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.appReview`: Exposes CRUD operations for the **AppReview** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AppReviews
+    * const appReviews = await prisma.appReview.findMany()
+    * ```
+    */
+  get appReview(): Prisma.AppReviewDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
@@ -975,6 +990,7 @@ export namespace Prisma {
     Voucher: 'Voucher',
     Promo: 'Promo',
     Review: 'Review',
+    AppReview: 'AppReview',
     Notification: 'Notification'
   };
 
@@ -991,7 +1007,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "userRole" | "store" | "category" | "product" | "productImage" | "address" | "wallet" | "walletTransaction" | "cart" | "cartItem" | "order" | "orderItem" | "orderStatusHistory" | "delivery" | "voucher" | "promo" | "review" | "notification"
+      modelProps: "user" | "userRole" | "store" | "category" | "product" | "productImage" | "address" | "wallet" | "walletTransaction" | "cart" | "cartItem" | "order" | "orderItem" | "orderStatusHistory" | "delivery" | "voucher" | "promo" | "review" | "appReview" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2327,6 +2343,80 @@ export namespace Prisma {
           }
         }
       }
+      AppReview: {
+        payload: Prisma.$AppReviewPayload<ExtArgs>
+        fields: Prisma.AppReviewFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AppReviewFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AppReviewFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload>
+          }
+          findFirst: {
+            args: Prisma.AppReviewFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AppReviewFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload>
+          }
+          findMany: {
+            args: Prisma.AppReviewFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload>[]
+          }
+          create: {
+            args: Prisma.AppReviewCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload>
+          }
+          createMany: {
+            args: Prisma.AppReviewCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AppReviewCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload>[]
+          }
+          delete: {
+            args: Prisma.AppReviewDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload>
+          }
+          update: {
+            args: Prisma.AppReviewUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload>
+          }
+          deleteMany: {
+            args: Prisma.AppReviewDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AppReviewUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AppReviewUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload>[]
+          }
+          upsert: {
+            args: Prisma.AppReviewUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AppReviewPayload>
+          }
+          aggregate: {
+            args: Prisma.AppReviewAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAppReview>
+          }
+          groupBy: {
+            args: Prisma.AppReviewGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AppReviewGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AppReviewCountArgs<ExtArgs>
+            result: $Utils.Optional<AppReviewCountAggregateOutputType> | number
+          }
+        }
+      }
       Notification: {
         payload: Prisma.$NotificationPayload<ExtArgs>
         fields: Prisma.NotificationFieldRefs
@@ -2527,6 +2617,7 @@ export namespace Prisma {
     voucher?: VoucherOmit
     promo?: PromoOmit
     review?: ReviewOmit
+    appReview?: AppReviewOmit
     notification?: NotificationOmit
   }
 
@@ -2608,6 +2699,7 @@ export namespace Prisma {
    */
 
   export type UserCountOutputType = {
+    appReviews: number
     roles: number
     addresses: number
     ordersAsBuyer: number
@@ -2617,6 +2709,7 @@ export namespace Prisma {
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    appReviews?: boolean | UserCountOutputTypeCountAppReviewsArgs
     roles?: boolean | UserCountOutputTypeCountRolesArgs
     addresses?: boolean | UserCountOutputTypeCountAddressesArgs
     ordersAsBuyer?: boolean | UserCountOutputTypeCountOrdersAsBuyerArgs
@@ -2634,6 +2727,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the UserCountOutputType
      */
     select?: UserCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAppReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppReviewWhereInput
   }
 
   /**
@@ -3203,6 +3303,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    appReviews?: boolean | User$appReviewsArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     store?: boolean | User$storeArgs<ExtArgs>
     addresses?: boolean | User$addressesArgs<ExtArgs>
@@ -3253,6 +3354,7 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "phone" | "avatarUrl" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    appReviews?: boolean | User$appReviewsArgs<ExtArgs>
     roles?: boolean | User$rolesArgs<ExtArgs>
     store?: boolean | User$storeArgs<ExtArgs>
     addresses?: boolean | User$addressesArgs<ExtArgs>
@@ -3270,6 +3372,7 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      appReviews: Prisma.$AppReviewPayload<ExtArgs>[]
       roles: Prisma.$UserRolePayload<ExtArgs>[]
       store: Prisma.$StorePayload<ExtArgs> | null
       addresses: Prisma.$AddressPayload<ExtArgs>[]
@@ -3684,6 +3787,7 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    appReviews<T extends User$appReviewsArgs<ExtArgs> = {}>(args?: Subset<T, User$appReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     roles<T extends User$rolesArgs<ExtArgs> = {}>(args?: Subset<T, User$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     store<T extends User$storeArgs<ExtArgs> = {}>(args?: Subset<T, User$storeArgs<ExtArgs>>): Prisma__StoreClient<$Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     addresses<T extends User$addressesArgs<ExtArgs> = {}>(args?: Subset<T, User$addressesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4121,6 +4225,30 @@ export namespace Prisma {
      * Limit how many Users to delete.
      */
     limit?: number
+  }
+
+  /**
+   * User.appReviews
+   */
+  export type User$appReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    where?: AppReviewWhereInput
+    orderBy?: AppReviewOrderByWithRelationInput | AppReviewOrderByWithRelationInput[]
+    cursor?: AppReviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AppReviewScalarFieldEnum | AppReviewScalarFieldEnum[]
   }
 
   /**
@@ -24042,6 +24170,1148 @@ export namespace Prisma {
 
 
   /**
+   * Model AppReview
+   */
+
+  export type AggregateAppReview = {
+    _count: AppReviewCountAggregateOutputType | null
+    _avg: AppReviewAvgAggregateOutputType | null
+    _sum: AppReviewSumAggregateOutputType | null
+    _min: AppReviewMinAggregateOutputType | null
+    _max: AppReviewMaxAggregateOutputType | null
+  }
+
+  export type AppReviewAvgAggregateOutputType = {
+    rating: number | null
+  }
+
+  export type AppReviewSumAggregateOutputType = {
+    rating: number | null
+  }
+
+  export type AppReviewMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    reviewerName: string | null
+    rating: number | null
+    comment: string | null
+    isPublished: boolean | null
+    createdAt: Date | null
+  }
+
+  export type AppReviewMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    reviewerName: string | null
+    rating: number | null
+    comment: string | null
+    isPublished: boolean | null
+    createdAt: Date | null
+  }
+
+  export type AppReviewCountAggregateOutputType = {
+    id: number
+    userId: number
+    reviewerName: number
+    rating: number
+    comment: number
+    isPublished: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AppReviewAvgAggregateInputType = {
+    rating?: true
+  }
+
+  export type AppReviewSumAggregateInputType = {
+    rating?: true
+  }
+
+  export type AppReviewMinAggregateInputType = {
+    id?: true
+    userId?: true
+    reviewerName?: true
+    rating?: true
+    comment?: true
+    isPublished?: true
+    createdAt?: true
+  }
+
+  export type AppReviewMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    reviewerName?: true
+    rating?: true
+    comment?: true
+    isPublished?: true
+    createdAt?: true
+  }
+
+  export type AppReviewCountAggregateInputType = {
+    id?: true
+    userId?: true
+    reviewerName?: true
+    rating?: true
+    comment?: true
+    isPublished?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AppReviewAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AppReview to aggregate.
+     */
+    where?: AppReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AppReviews to fetch.
+     */
+    orderBy?: AppReviewOrderByWithRelationInput | AppReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AppReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AppReviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AppReviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AppReviews
+    **/
+    _count?: true | AppReviewCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AppReviewAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AppReviewSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AppReviewMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AppReviewMaxAggregateInputType
+  }
+
+  export type GetAppReviewAggregateType<T extends AppReviewAggregateArgs> = {
+        [P in keyof T & keyof AggregateAppReview]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAppReview[P]>
+      : GetScalarType<T[P], AggregateAppReview[P]>
+  }
+
+
+
+
+  export type AppReviewGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AppReviewWhereInput
+    orderBy?: AppReviewOrderByWithAggregationInput | AppReviewOrderByWithAggregationInput[]
+    by: AppReviewScalarFieldEnum[] | AppReviewScalarFieldEnum
+    having?: AppReviewScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AppReviewCountAggregateInputType | true
+    _avg?: AppReviewAvgAggregateInputType
+    _sum?: AppReviewSumAggregateInputType
+    _min?: AppReviewMinAggregateInputType
+    _max?: AppReviewMaxAggregateInputType
+  }
+
+  export type AppReviewGroupByOutputType = {
+    id: string
+    userId: string | null
+    reviewerName: string
+    rating: number
+    comment: string
+    isPublished: boolean
+    createdAt: Date
+    _count: AppReviewCountAggregateOutputType | null
+    _avg: AppReviewAvgAggregateOutputType | null
+    _sum: AppReviewSumAggregateOutputType | null
+    _min: AppReviewMinAggregateOutputType | null
+    _max: AppReviewMaxAggregateOutputType | null
+  }
+
+  type GetAppReviewGroupByPayload<T extends AppReviewGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AppReviewGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AppReviewGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AppReviewGroupByOutputType[P]>
+            : GetScalarType<T[P], AppReviewGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AppReviewSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    reviewerName?: boolean
+    rating?: boolean
+    comment?: boolean
+    isPublished?: boolean
+    createdAt?: boolean
+    user?: boolean | AppReview$userArgs<ExtArgs>
+  }, ExtArgs["result"]["appReview"]>
+
+  export type AppReviewSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    reviewerName?: boolean
+    rating?: boolean
+    comment?: boolean
+    isPublished?: boolean
+    createdAt?: boolean
+    user?: boolean | AppReview$userArgs<ExtArgs>
+  }, ExtArgs["result"]["appReview"]>
+
+  export type AppReviewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    reviewerName?: boolean
+    rating?: boolean
+    comment?: boolean
+    isPublished?: boolean
+    createdAt?: boolean
+    user?: boolean | AppReview$userArgs<ExtArgs>
+  }, ExtArgs["result"]["appReview"]>
+
+  export type AppReviewSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    reviewerName?: boolean
+    rating?: boolean
+    comment?: boolean
+    isPublished?: boolean
+    createdAt?: boolean
+  }
+
+  export type AppReviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "reviewerName" | "rating" | "comment" | "isPublished" | "createdAt", ExtArgs["result"]["appReview"]>
+  export type AppReviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | AppReview$userArgs<ExtArgs>
+  }
+  export type AppReviewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | AppReview$userArgs<ExtArgs>
+  }
+  export type AppReviewIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | AppReview$userArgs<ExtArgs>
+  }
+
+  export type $AppReviewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AppReview"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string | null
+      reviewerName: string
+      rating: number
+      comment: string
+      isPublished: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["appReview"]>
+    composites: {}
+  }
+
+  type AppReviewGetPayload<S extends boolean | null | undefined | AppReviewDefaultArgs> = $Result.GetResult<Prisma.$AppReviewPayload, S>
+
+  type AppReviewCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AppReviewFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AppReviewCountAggregateInputType | true
+    }
+
+  export interface AppReviewDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AppReview'], meta: { name: 'AppReview' } }
+    /**
+     * Find zero or one AppReview that matches the filter.
+     * @param {AppReviewFindUniqueArgs} args - Arguments to find a AppReview
+     * @example
+     * // Get one AppReview
+     * const appReview = await prisma.appReview.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AppReviewFindUniqueArgs>(args: SelectSubset<T, AppReviewFindUniqueArgs<ExtArgs>>): Prisma__AppReviewClient<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AppReview that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AppReviewFindUniqueOrThrowArgs} args - Arguments to find a AppReview
+     * @example
+     * // Get one AppReview
+     * const appReview = await prisma.appReview.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AppReviewFindUniqueOrThrowArgs>(args: SelectSubset<T, AppReviewFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AppReviewClient<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AppReview that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppReviewFindFirstArgs} args - Arguments to find a AppReview
+     * @example
+     * // Get one AppReview
+     * const appReview = await prisma.appReview.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AppReviewFindFirstArgs>(args?: SelectSubset<T, AppReviewFindFirstArgs<ExtArgs>>): Prisma__AppReviewClient<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AppReview that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppReviewFindFirstOrThrowArgs} args - Arguments to find a AppReview
+     * @example
+     * // Get one AppReview
+     * const appReview = await prisma.appReview.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AppReviewFindFirstOrThrowArgs>(args?: SelectSubset<T, AppReviewFindFirstOrThrowArgs<ExtArgs>>): Prisma__AppReviewClient<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AppReviews that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppReviewFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AppReviews
+     * const appReviews = await prisma.appReview.findMany()
+     * 
+     * // Get first 10 AppReviews
+     * const appReviews = await prisma.appReview.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const appReviewWithIdOnly = await prisma.appReview.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AppReviewFindManyArgs>(args?: SelectSubset<T, AppReviewFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AppReview.
+     * @param {AppReviewCreateArgs} args - Arguments to create a AppReview.
+     * @example
+     * // Create one AppReview
+     * const AppReview = await prisma.appReview.create({
+     *   data: {
+     *     // ... data to create a AppReview
+     *   }
+     * })
+     * 
+     */
+    create<T extends AppReviewCreateArgs>(args: SelectSubset<T, AppReviewCreateArgs<ExtArgs>>): Prisma__AppReviewClient<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AppReviews.
+     * @param {AppReviewCreateManyArgs} args - Arguments to create many AppReviews.
+     * @example
+     * // Create many AppReviews
+     * const appReview = await prisma.appReview.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AppReviewCreateManyArgs>(args?: SelectSubset<T, AppReviewCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AppReviews and returns the data saved in the database.
+     * @param {AppReviewCreateManyAndReturnArgs} args - Arguments to create many AppReviews.
+     * @example
+     * // Create many AppReviews
+     * const appReview = await prisma.appReview.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AppReviews and only return the `id`
+     * const appReviewWithIdOnly = await prisma.appReview.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AppReviewCreateManyAndReturnArgs>(args?: SelectSubset<T, AppReviewCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AppReview.
+     * @param {AppReviewDeleteArgs} args - Arguments to delete one AppReview.
+     * @example
+     * // Delete one AppReview
+     * const AppReview = await prisma.appReview.delete({
+     *   where: {
+     *     // ... filter to delete one AppReview
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AppReviewDeleteArgs>(args: SelectSubset<T, AppReviewDeleteArgs<ExtArgs>>): Prisma__AppReviewClient<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AppReview.
+     * @param {AppReviewUpdateArgs} args - Arguments to update one AppReview.
+     * @example
+     * // Update one AppReview
+     * const appReview = await prisma.appReview.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AppReviewUpdateArgs>(args: SelectSubset<T, AppReviewUpdateArgs<ExtArgs>>): Prisma__AppReviewClient<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AppReviews.
+     * @param {AppReviewDeleteManyArgs} args - Arguments to filter AppReviews to delete.
+     * @example
+     * // Delete a few AppReviews
+     * const { count } = await prisma.appReview.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AppReviewDeleteManyArgs>(args?: SelectSubset<T, AppReviewDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AppReviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppReviewUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AppReviews
+     * const appReview = await prisma.appReview.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AppReviewUpdateManyArgs>(args: SelectSubset<T, AppReviewUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AppReviews and returns the data updated in the database.
+     * @param {AppReviewUpdateManyAndReturnArgs} args - Arguments to update many AppReviews.
+     * @example
+     * // Update many AppReviews
+     * const appReview = await prisma.appReview.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AppReviews and only return the `id`
+     * const appReviewWithIdOnly = await prisma.appReview.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AppReviewUpdateManyAndReturnArgs>(args: SelectSubset<T, AppReviewUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AppReview.
+     * @param {AppReviewUpsertArgs} args - Arguments to update or create a AppReview.
+     * @example
+     * // Update or create a AppReview
+     * const appReview = await prisma.appReview.upsert({
+     *   create: {
+     *     // ... data to create a AppReview
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AppReview we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AppReviewUpsertArgs>(args: SelectSubset<T, AppReviewUpsertArgs<ExtArgs>>): Prisma__AppReviewClient<$Result.GetResult<Prisma.$AppReviewPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AppReviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppReviewCountArgs} args - Arguments to filter AppReviews to count.
+     * @example
+     * // Count the number of AppReviews
+     * const count = await prisma.appReview.count({
+     *   where: {
+     *     // ... the filter for the AppReviews we want to count
+     *   }
+     * })
+    **/
+    count<T extends AppReviewCountArgs>(
+      args?: Subset<T, AppReviewCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AppReviewCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AppReview.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppReviewAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AppReviewAggregateArgs>(args: Subset<T, AppReviewAggregateArgs>): Prisma.PrismaPromise<GetAppReviewAggregateType<T>>
+
+    /**
+     * Group by AppReview.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AppReviewGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AppReviewGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AppReviewGroupByArgs['orderBy'] }
+        : { orderBy?: AppReviewGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AppReviewGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAppReviewGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AppReview model
+   */
+  readonly fields: AppReviewFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AppReview.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AppReviewClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends AppReview$userArgs<ExtArgs> = {}>(args?: Subset<T, AppReview$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AppReview model
+   */
+  interface AppReviewFieldRefs {
+    readonly id: FieldRef<"AppReview", 'String'>
+    readonly userId: FieldRef<"AppReview", 'String'>
+    readonly reviewerName: FieldRef<"AppReview", 'String'>
+    readonly rating: FieldRef<"AppReview", 'Int'>
+    readonly comment: FieldRef<"AppReview", 'String'>
+    readonly isPublished: FieldRef<"AppReview", 'Boolean'>
+    readonly createdAt: FieldRef<"AppReview", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AppReview findUnique
+   */
+  export type AppReviewFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which AppReview to fetch.
+     */
+    where: AppReviewWhereUniqueInput
+  }
+
+  /**
+   * AppReview findUniqueOrThrow
+   */
+  export type AppReviewFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which AppReview to fetch.
+     */
+    where: AppReviewWhereUniqueInput
+  }
+
+  /**
+   * AppReview findFirst
+   */
+  export type AppReviewFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which AppReview to fetch.
+     */
+    where?: AppReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AppReviews to fetch.
+     */
+    orderBy?: AppReviewOrderByWithRelationInput | AppReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AppReviews.
+     */
+    cursor?: AppReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AppReviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AppReviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AppReviews.
+     */
+    distinct?: AppReviewScalarFieldEnum | AppReviewScalarFieldEnum[]
+  }
+
+  /**
+   * AppReview findFirstOrThrow
+   */
+  export type AppReviewFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which AppReview to fetch.
+     */
+    where?: AppReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AppReviews to fetch.
+     */
+    orderBy?: AppReviewOrderByWithRelationInput | AppReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AppReviews.
+     */
+    cursor?: AppReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AppReviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AppReviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AppReviews.
+     */
+    distinct?: AppReviewScalarFieldEnum | AppReviewScalarFieldEnum[]
+  }
+
+  /**
+   * AppReview findMany
+   */
+  export type AppReviewFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    /**
+     * Filter, which AppReviews to fetch.
+     */
+    where?: AppReviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AppReviews to fetch.
+     */
+    orderBy?: AppReviewOrderByWithRelationInput | AppReviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AppReviews.
+     */
+    cursor?: AppReviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AppReviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AppReviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AppReviews.
+     */
+    distinct?: AppReviewScalarFieldEnum | AppReviewScalarFieldEnum[]
+  }
+
+  /**
+   * AppReview create
+   */
+  export type AppReviewCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AppReview.
+     */
+    data: XOR<AppReviewCreateInput, AppReviewUncheckedCreateInput>
+  }
+
+  /**
+   * AppReview createMany
+   */
+  export type AppReviewCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AppReviews.
+     */
+    data: AppReviewCreateManyInput | AppReviewCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AppReview createManyAndReturn
+   */
+  export type AppReviewCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * The data used to create many AppReviews.
+     */
+    data: AppReviewCreateManyInput | AppReviewCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AppReview update
+   */
+  export type AppReviewUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AppReview.
+     */
+    data: XOR<AppReviewUpdateInput, AppReviewUncheckedUpdateInput>
+    /**
+     * Choose, which AppReview to update.
+     */
+    where: AppReviewWhereUniqueInput
+  }
+
+  /**
+   * AppReview updateMany
+   */
+  export type AppReviewUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AppReviews.
+     */
+    data: XOR<AppReviewUpdateManyMutationInput, AppReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which AppReviews to update
+     */
+    where?: AppReviewWhereInput
+    /**
+     * Limit how many AppReviews to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AppReview updateManyAndReturn
+   */
+  export type AppReviewUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * The data used to update AppReviews.
+     */
+    data: XOR<AppReviewUpdateManyMutationInput, AppReviewUncheckedUpdateManyInput>
+    /**
+     * Filter which AppReviews to update
+     */
+    where?: AppReviewWhereInput
+    /**
+     * Limit how many AppReviews to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AppReview upsert
+   */
+  export type AppReviewUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AppReview to update in case it exists.
+     */
+    where: AppReviewWhereUniqueInput
+    /**
+     * In case the AppReview found by the `where` argument doesn't exist, create a new AppReview with this data.
+     */
+    create: XOR<AppReviewCreateInput, AppReviewUncheckedCreateInput>
+    /**
+     * In case the AppReview was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AppReviewUpdateInput, AppReviewUncheckedUpdateInput>
+  }
+
+  /**
+   * AppReview delete
+   */
+  export type AppReviewDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+    /**
+     * Filter which AppReview to delete.
+     */
+    where: AppReviewWhereUniqueInput
+  }
+
+  /**
+   * AppReview deleteMany
+   */
+  export type AppReviewDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AppReviews to delete
+     */
+    where?: AppReviewWhereInput
+    /**
+     * Limit how many AppReviews to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AppReview.user
+   */
+  export type AppReview$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * AppReview without action
+   */
+  export type AppReviewDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AppReview
+     */
+    select?: AppReviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AppReview
+     */
+    omit?: AppReviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AppReviewInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Notification
    */
 
@@ -25399,6 +26669,19 @@ export namespace Prisma {
   export type ReviewScalarFieldEnum = (typeof ReviewScalarFieldEnum)[keyof typeof ReviewScalarFieldEnum]
 
 
+  export const AppReviewScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    reviewerName: 'reviewerName',
+    rating: 'rating',
+    comment: 'comment',
+    isPublished: 'isPublished',
+    createdAt: 'createdAt'
+  };
+
+  export type AppReviewScalarFieldEnum = (typeof AppReviewScalarFieldEnum)[keyof typeof AppReviewScalarFieldEnum]
+
+
   export const NotificationScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -25632,6 +26915,7 @@ export namespace Prisma {
     isActive?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    appReviews?: AppReviewListRelationFilter
     roles?: UserRoleListRelationFilter
     store?: XOR<StoreNullableScalarRelationFilter, StoreWhereInput> | null
     addresses?: AddressListRelationFilter
@@ -25653,6 +26937,7 @@ export namespace Prisma {
     isActive?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    appReviews?: AppReviewOrderByRelationAggregateInput
     roles?: UserRoleOrderByRelationAggregateInput
     store?: StoreOrderByWithRelationInput
     addresses?: AddressOrderByRelationAggregateInput
@@ -25677,6 +26962,7 @@ export namespace Prisma {
     isActive?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    appReviews?: AppReviewListRelationFilter
     roles?: UserRoleListRelationFilter
     store?: XOR<StoreNullableScalarRelationFilter, StoreWhereInput> | null
     addresses?: AddressListRelationFilter
@@ -27007,6 +28293,73 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
   }
 
+  export type AppReviewWhereInput = {
+    AND?: AppReviewWhereInput | AppReviewWhereInput[]
+    OR?: AppReviewWhereInput[]
+    NOT?: AppReviewWhereInput | AppReviewWhereInput[]
+    id?: StringFilter<"AppReview"> | string
+    userId?: StringNullableFilter<"AppReview"> | string | null
+    reviewerName?: StringFilter<"AppReview"> | string
+    rating?: IntFilter<"AppReview"> | number
+    comment?: StringFilter<"AppReview"> | string
+    isPublished?: BoolFilter<"AppReview"> | boolean
+    createdAt?: DateTimeFilter<"AppReview"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type AppReviewOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    reviewerName?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    isPublished?: SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type AppReviewWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: AppReviewWhereInput | AppReviewWhereInput[]
+    OR?: AppReviewWhereInput[]
+    NOT?: AppReviewWhereInput | AppReviewWhereInput[]
+    userId?: StringNullableFilter<"AppReview"> | string | null
+    reviewerName?: StringFilter<"AppReview"> | string
+    rating?: IntFilter<"AppReview"> | number
+    comment?: StringFilter<"AppReview"> | string
+    isPublished?: BoolFilter<"AppReview"> | boolean
+    createdAt?: DateTimeFilter<"AppReview"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type AppReviewOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrderInput | SortOrder
+    reviewerName?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    isPublished?: SortOrder
+    createdAt?: SortOrder
+    _count?: AppReviewCountOrderByAggregateInput
+    _avg?: AppReviewAvgOrderByAggregateInput
+    _max?: AppReviewMaxOrderByAggregateInput
+    _min?: AppReviewMinOrderByAggregateInput
+    _sum?: AppReviewSumOrderByAggregateInput
+  }
+
+  export type AppReviewScalarWhereWithAggregatesInput = {
+    AND?: AppReviewScalarWhereWithAggregatesInput | AppReviewScalarWhereWithAggregatesInput[]
+    OR?: AppReviewScalarWhereWithAggregatesInput[]
+    NOT?: AppReviewScalarWhereWithAggregatesInput | AppReviewScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"AppReview"> | string
+    userId?: StringNullableWithAggregatesFilter<"AppReview"> | string | null
+    reviewerName?: StringWithAggregatesFilter<"AppReview"> | string
+    rating?: IntWithAggregatesFilter<"AppReview"> | number
+    comment?: StringWithAggregatesFilter<"AppReview"> | string
+    isPublished?: BoolWithAggregatesFilter<"AppReview"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"AppReview"> | Date | string
+  }
+
   export type NotificationWhereInput = {
     AND?: NotificationWhereInput | NotificationWhereInput[]
     OR?: NotificationWhereInput[]
@@ -27082,6 +28435,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     roles?: UserRoleCreateNestedManyWithoutUserInput
     store?: StoreCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -27103,6 +28457,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     store?: StoreUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -27124,6 +28479,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     roles?: UserRoleUpdateManyWithoutUserNestedInput
     store?: StoreUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -27145,6 +28501,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     store?: StoreUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -28552,6 +29909,75 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type AppReviewCreateInput = {
+    id?: string
+    reviewerName: string
+    rating: number
+    comment: string
+    isPublished?: boolean
+    createdAt?: Date | string
+    user?: UserCreateNestedOneWithoutAppReviewsInput
+  }
+
+  export type AppReviewUncheckedCreateInput = {
+    id?: string
+    userId?: string | null
+    reviewerName: string
+    rating: number
+    comment: string
+    isPublished?: boolean
+    createdAt?: Date | string
+  }
+
+  export type AppReviewUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewerName?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: StringFieldUpdateOperationsInput | string
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutAppReviewsNestedInput
+  }
+
+  export type AppReviewUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewerName?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: StringFieldUpdateOperationsInput | string
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppReviewCreateManyInput = {
+    id?: string
+    userId?: string | null
+    reviewerName: string
+    rating: number
+    comment: string
+    isPublished?: boolean
+    createdAt?: Date | string
+  }
+
+  export type AppReviewUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewerName?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: StringFieldUpdateOperationsInput | string
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppReviewUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewerName?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: StringFieldUpdateOperationsInput | string
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type NotificationCreateInput = {
     id?: string
     title: string
@@ -28667,6 +30093,12 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type AppReviewListRelationFilter = {
+    every?: AppReviewWhereInput
+    some?: AppReviewWhereInput
+    none?: AppReviewWhereInput
+  }
+
   export type UserRoleListRelationFilter = {
     every?: UserRoleWhereInput
     some?: UserRoleWhereInput
@@ -28721,6 +30153,10 @@ export namespace Prisma {
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type AppReviewOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type UserRoleOrderByRelationAggregateInput = {
@@ -29916,6 +31352,44 @@ export namespace Prisma {
     rating?: SortOrder
   }
 
+  export type AppReviewCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    reviewerName?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    isPublished?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AppReviewAvgOrderByAggregateInput = {
+    rating?: SortOrder
+  }
+
+  export type AppReviewMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    reviewerName?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    isPublished?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AppReviewMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    reviewerName?: SortOrder
+    rating?: SortOrder
+    comment?: SortOrder
+    isPublished?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AppReviewSumOrderByAggregateInput = {
+    rating?: SortOrder
+  }
+
   export type NotificationCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -29944,6 +31418,13 @@ export namespace Prisma {
     isRead?: SortOrder
     link?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type AppReviewCreateNestedManyWithoutUserInput = {
+    create?: XOR<AppReviewCreateWithoutUserInput, AppReviewUncheckedCreateWithoutUserInput> | AppReviewCreateWithoutUserInput[] | AppReviewUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AppReviewCreateOrConnectWithoutUserInput | AppReviewCreateOrConnectWithoutUserInput[]
+    createMany?: AppReviewCreateManyUserInputEnvelope
+    connect?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
   }
 
   export type UserRoleCreateNestedManyWithoutUserInput = {
@@ -30004,6 +31485,13 @@ export namespace Prisma {
     connectOrCreate?: DeliveryCreateOrConnectWithoutDriverInput | DeliveryCreateOrConnectWithoutDriverInput[]
     createMany?: DeliveryCreateManyDriverInputEnvelope
     connect?: DeliveryWhereUniqueInput | DeliveryWhereUniqueInput[]
+  }
+
+  export type AppReviewUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<AppReviewCreateWithoutUserInput, AppReviewUncheckedCreateWithoutUserInput> | AppReviewCreateWithoutUserInput[] | AppReviewUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AppReviewCreateOrConnectWithoutUserInput | AppReviewCreateOrConnectWithoutUserInput[]
+    createMany?: AppReviewCreateManyUserInputEnvelope
+    connect?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
   }
 
   export type UserRoleUncheckedCreateNestedManyWithoutUserInput = {
@@ -30080,6 +31568,20 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
+  }
+
+  export type AppReviewUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AppReviewCreateWithoutUserInput, AppReviewUncheckedCreateWithoutUserInput> | AppReviewCreateWithoutUserInput[] | AppReviewUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AppReviewCreateOrConnectWithoutUserInput | AppReviewCreateOrConnectWithoutUserInput[]
+    upsert?: AppReviewUpsertWithWhereUniqueWithoutUserInput | AppReviewUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AppReviewCreateManyUserInputEnvelope
+    set?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
+    disconnect?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
+    delete?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
+    connect?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
+    update?: AppReviewUpdateWithWhereUniqueWithoutUserInput | AppReviewUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AppReviewUpdateManyWithWhereWithoutUserInput | AppReviewUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AppReviewScalarWhereInput | AppReviewScalarWhereInput[]
   }
 
   export type UserRoleUpdateManyWithoutUserNestedInput = {
@@ -30194,6 +31696,20 @@ export namespace Prisma {
     update?: DeliveryUpdateWithWhereUniqueWithoutDriverInput | DeliveryUpdateWithWhereUniqueWithoutDriverInput[]
     updateMany?: DeliveryUpdateManyWithWhereWithoutDriverInput | DeliveryUpdateManyWithWhereWithoutDriverInput[]
     deleteMany?: DeliveryScalarWhereInput | DeliveryScalarWhereInput[]
+  }
+
+  export type AppReviewUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<AppReviewCreateWithoutUserInput, AppReviewUncheckedCreateWithoutUserInput> | AppReviewCreateWithoutUserInput[] | AppReviewUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: AppReviewCreateOrConnectWithoutUserInput | AppReviewCreateOrConnectWithoutUserInput[]
+    upsert?: AppReviewUpsertWithWhereUniqueWithoutUserInput | AppReviewUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: AppReviewCreateManyUserInputEnvelope
+    set?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
+    disconnect?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
+    delete?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
+    connect?: AppReviewWhereUniqueInput | AppReviewWhereUniqueInput[]
+    update?: AppReviewUpdateWithWhereUniqueWithoutUserInput | AppReviewUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: AppReviewUpdateManyWithWhereWithoutUserInput | AppReviewUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: AppReviewScalarWhereInput | AppReviewScalarWhereInput[]
   }
 
   export type UserRoleUncheckedUpdateManyWithoutUserNestedInput = {
@@ -31322,6 +32838,22 @@ export namespace Prisma {
     update?: XOR<XOR<ProductUpdateToOneWithWhereWithoutReviewsInput, ProductUpdateWithoutReviewsInput>, ProductUncheckedUpdateWithoutReviewsInput>
   }
 
+  export type UserCreateNestedOneWithoutAppReviewsInput = {
+    create?: XOR<UserCreateWithoutAppReviewsInput, UserUncheckedCreateWithoutAppReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAppReviewsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneWithoutAppReviewsNestedInput = {
+    create?: XOR<UserCreateWithoutAppReviewsInput, UserUncheckedCreateWithoutAppReviewsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAppReviewsInput
+    upsert?: UserUpsertWithoutAppReviewsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAppReviewsInput, UserUpdateWithoutAppReviewsInput>, UserUncheckedUpdateWithoutAppReviewsInput>
+  }
+
   export type UserCreateNestedOneWithoutNotificationsInput = {
     create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
@@ -31710,6 +33242,34 @@ export namespace Prisma {
     _max?: NestedEnumPromoTypeFilter<$PrismaModel>
   }
 
+  export type AppReviewCreateWithoutUserInput = {
+    id?: string
+    reviewerName: string
+    rating: number
+    comment: string
+    isPublished?: boolean
+    createdAt?: Date | string
+  }
+
+  export type AppReviewUncheckedCreateWithoutUserInput = {
+    id?: string
+    reviewerName: string
+    rating: number
+    comment: string
+    isPublished?: boolean
+    createdAt?: Date | string
+  }
+
+  export type AppReviewCreateOrConnectWithoutUserInput = {
+    where: AppReviewWhereUniqueInput
+    create: XOR<AppReviewCreateWithoutUserInput, AppReviewUncheckedCreateWithoutUserInput>
+  }
+
+  export type AppReviewCreateManyUserInputEnvelope = {
+    data: AppReviewCreateManyUserInput | AppReviewCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserRoleCreateWithoutUserInput = {
     id?: string
     role: $Enums.RoleType
@@ -31983,6 +33543,35 @@ export namespace Prisma {
   export type DeliveryCreateManyDriverInputEnvelope = {
     data: DeliveryCreateManyDriverInput | DeliveryCreateManyDriverInput[]
     skipDuplicates?: boolean
+  }
+
+  export type AppReviewUpsertWithWhereUniqueWithoutUserInput = {
+    where: AppReviewWhereUniqueInput
+    update: XOR<AppReviewUpdateWithoutUserInput, AppReviewUncheckedUpdateWithoutUserInput>
+    create: XOR<AppReviewCreateWithoutUserInput, AppReviewUncheckedCreateWithoutUserInput>
+  }
+
+  export type AppReviewUpdateWithWhereUniqueWithoutUserInput = {
+    where: AppReviewWhereUniqueInput
+    data: XOR<AppReviewUpdateWithoutUserInput, AppReviewUncheckedUpdateWithoutUserInput>
+  }
+
+  export type AppReviewUpdateManyWithWhereWithoutUserInput = {
+    where: AppReviewScalarWhereInput
+    data: XOR<AppReviewUpdateManyMutationInput, AppReviewUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type AppReviewScalarWhereInput = {
+    AND?: AppReviewScalarWhereInput | AppReviewScalarWhereInput[]
+    OR?: AppReviewScalarWhereInput[]
+    NOT?: AppReviewScalarWhereInput | AppReviewScalarWhereInput[]
+    id?: StringFilter<"AppReview"> | string
+    userId?: StringNullableFilter<"AppReview"> | string | null
+    reviewerName?: StringFilter<"AppReview"> | string
+    rating?: IntFilter<"AppReview"> | number
+    comment?: StringFilter<"AppReview"> | string
+    isPublished?: BoolFilter<"AppReview"> | boolean
+    createdAt?: DateTimeFilter<"AppReview"> | Date | string
   }
 
   export type UserRoleUpsertWithWhereUniqueWithoutUserInput = {
@@ -32273,6 +33862,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     store?: StoreCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -32293,6 +33883,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     store?: StoreUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
@@ -32329,6 +33920,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     store?: StoreUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -32349,6 +33941,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     store?: StoreUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -32369,6 +33962,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     roles?: UserRoleCreateNestedManyWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -32389,6 +33983,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
@@ -32523,6 +34118,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     roles?: UserRoleUpdateManyWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -32543,6 +34139,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -33090,6 +34687,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     roles?: UserRoleCreateNestedManyWithoutUserInput
     store?: StoreCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -33110,6 +34708,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     store?: StoreUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
@@ -33198,6 +34797,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     roles?: UserRoleUpdateManyWithoutUserNestedInput
     store?: StoreUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -33218,6 +34818,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     store?: StoreUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -33254,6 +34855,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     roles?: UserRoleCreateNestedManyWithoutUserInput
     store?: StoreCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -33274,6 +34876,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     store?: StoreUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -33342,6 +34945,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     roles?: UserRoleUpdateManyWithoutUserNestedInput
     store?: StoreUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -33362,6 +34966,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     store?: StoreUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -33461,6 +35066,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     roles?: UserRoleCreateNestedManyWithoutUserInput
     store?: StoreCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -33481,6 +35087,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     store?: StoreUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -33543,6 +35150,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     roles?: UserRoleUpdateManyWithoutUserNestedInput
     store?: StoreUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -33563,6 +35171,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     store?: StoreUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -33731,6 +35340,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     roles?: UserRoleCreateNestedManyWithoutUserInput
     store?: StoreCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -33751,6 +35361,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     store?: StoreUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -34000,6 +35611,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     roles?: UserRoleUpdateManyWithoutUserNestedInput
     store?: StoreUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -34020,6 +35632,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     store?: StoreUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -34607,6 +36220,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     roles?: UserRoleCreateNestedManyWithoutUserInput
     store?: StoreCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -34627,6 +36241,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     store?: StoreUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -34716,6 +36331,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     roles?: UserRoleUpdateManyWithoutUserNestedInput
     store?: StoreUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -34736,6 +36352,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     store?: StoreUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -34892,6 +36509,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     roles?: UserRoleCreateNestedManyWithoutUserInput
     store?: StoreCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -34912,6 +36530,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     store?: StoreUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -34989,6 +36608,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     roles?: UserRoleUpdateManyWithoutUserNestedInput
     store?: StoreUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -35009,6 +36629,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     store?: StoreUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -35066,6 +36687,106 @@ export namespace Prisma {
     orderItems?: OrderItemUncheckedUpdateManyWithoutProductNestedInput
   }
 
+  export type UserCreateWithoutAppReviewsInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    phone?: string | null
+    avatarUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    roles?: UserRoleCreateNestedManyWithoutUserInput
+    store?: StoreCreateNestedOneWithoutUserInput
+    addresses?: AddressCreateNestedManyWithoutUserInput
+    wallet?: WalletCreateNestedOneWithoutUserInput
+    cart?: CartCreateNestedOneWithoutUserInput
+    ordersAsBuyer?: OrderCreateNestedManyWithoutBuyerInput
+    reviews?: ReviewCreateNestedManyWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
+    driverDeliveries?: DeliveryCreateNestedManyWithoutDriverInput
+  }
+
+  export type UserUncheckedCreateWithoutAppReviewsInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    phone?: string | null
+    avatarUrl?: string | null
+    isActive?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
+    store?: StoreUncheckedCreateNestedOneWithoutUserInput
+    addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
+    wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
+    cart?: CartUncheckedCreateNestedOneWithoutUserInput
+    ordersAsBuyer?: OrderUncheckedCreateNestedManyWithoutBuyerInput
+    reviews?: ReviewUncheckedCreateNestedManyWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
+    driverDeliveries?: DeliveryUncheckedCreateNestedManyWithoutDriverInput
+  }
+
+  export type UserCreateOrConnectWithoutAppReviewsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAppReviewsInput, UserUncheckedCreateWithoutAppReviewsInput>
+  }
+
+  export type UserUpsertWithoutAppReviewsInput = {
+    update: XOR<UserUpdateWithoutAppReviewsInput, UserUncheckedUpdateWithoutAppReviewsInput>
+    create: XOR<UserCreateWithoutAppReviewsInput, UserUncheckedCreateWithoutAppReviewsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAppReviewsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAppReviewsInput, UserUncheckedUpdateWithoutAppReviewsInput>
+  }
+
+  export type UserUpdateWithoutAppReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roles?: UserRoleUpdateManyWithoutUserNestedInput
+    store?: StoreUpdateOneWithoutUserNestedInput
+    addresses?: AddressUpdateManyWithoutUserNestedInput
+    wallet?: WalletUpdateOneWithoutUserNestedInput
+    cart?: CartUpdateOneWithoutUserNestedInput
+    ordersAsBuyer?: OrderUpdateManyWithoutBuyerNestedInput
+    reviews?: ReviewUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
+    driverDeliveries?: DeliveryUpdateManyWithoutDriverNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAppReviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    avatarUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    isActive?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
+    store?: StoreUncheckedUpdateOneWithoutUserNestedInput
+    addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
+    wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
+    cart?: CartUncheckedUpdateOneWithoutUserNestedInput
+    ordersAsBuyer?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
+    reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+    driverDeliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+  }
+
   export type UserCreateWithoutNotificationsInput = {
     id?: string
     email: string
@@ -35076,6 +36797,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewCreateNestedManyWithoutUserInput
     roles?: UserRoleCreateNestedManyWithoutUserInput
     store?: StoreCreateNestedOneWithoutUserInput
     addresses?: AddressCreateNestedManyWithoutUserInput
@@ -35096,6 +36818,7 @@ export namespace Prisma {
     isActive?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
+    appReviews?: AppReviewUncheckedCreateNestedManyWithoutUserInput
     roles?: UserRoleUncheckedCreateNestedManyWithoutUserInput
     store?: StoreUncheckedCreateNestedOneWithoutUserInput
     addresses?: AddressUncheckedCreateNestedManyWithoutUserInput
@@ -35132,6 +36855,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUpdateManyWithoutUserNestedInput
     roles?: UserRoleUpdateManyWithoutUserNestedInput
     store?: StoreUpdateOneWithoutUserNestedInput
     addresses?: AddressUpdateManyWithoutUserNestedInput
@@ -35152,6 +36876,7 @@ export namespace Prisma {
     isActive?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    appReviews?: AppReviewUncheckedUpdateManyWithoutUserNestedInput
     roles?: UserRoleUncheckedUpdateManyWithoutUserNestedInput
     store?: StoreUncheckedUpdateOneWithoutUserNestedInput
     addresses?: AddressUncheckedUpdateManyWithoutUserNestedInput
@@ -35160,6 +36885,15 @@ export namespace Prisma {
     ordersAsBuyer?: OrderUncheckedUpdateManyWithoutBuyerNestedInput
     reviews?: ReviewUncheckedUpdateManyWithoutUserNestedInput
     driverDeliveries?: DeliveryUncheckedUpdateManyWithoutDriverNestedInput
+  }
+
+  export type AppReviewCreateManyUserInput = {
+    id?: string
+    reviewerName: string
+    rating: number
+    comment: string
+    isPublished?: boolean
+    createdAt?: Date | string
   }
 
   export type UserRoleCreateManyUserInput = {
@@ -35227,6 +36961,33 @@ export namespace Prisma {
     deliveredAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type AppReviewUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewerName?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: StringFieldUpdateOperationsInput | string
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppReviewUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewerName?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: StringFieldUpdateOperationsInput | string
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AppReviewUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    reviewerName?: StringFieldUpdateOperationsInput | string
+    rating?: IntFieldUpdateOperationsInput | number
+    comment?: StringFieldUpdateOperationsInput | string
+    isPublished?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserRoleUpdateWithoutUserInput = {

@@ -321,6 +321,16 @@ exports.Prisma.ReviewScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.AppReviewScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reviewerName: 'reviewerName',
+  rating: 'rating',
+  comment: 'comment',
+  isPublished: 'isPublished',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.NotificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -414,6 +424,7 @@ exports.Prisma.ModelName = {
   Voucher: 'Voucher',
   Promo: 'Promo',
   Review: 'Review',
+  AppReview: 'AppReview',
   Notification: 'Notification'
 };
 

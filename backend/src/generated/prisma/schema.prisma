@@ -72,15 +72,16 @@ enum PromoType {
 // =============================================================
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String // bcrypt hashed
-  name      String
-  phone     String?
-  avatarUrl String?
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String      @id @default(cuid())
+  email      String      @unique
+  password   String // bcrypt hashed
+  name       String
+  phone      String?
+  avatarUrl  String?
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  appReviews AppReview[]
 
   // Relations
   roles            UserRole[]
@@ -411,6 +412,20 @@ model Review {
 
   @@unique([userId, productId]) // one review per product per user
   @@map("reviews")
+}
+
+model AppReview {
+  id           String   @id @default(cuid())
+  userId       String?
+  reviewerName String
+  rating       Int //1-5
+  comment      String
+  isPublished  Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("app_reviews")
 }
 
 // =============================================================
