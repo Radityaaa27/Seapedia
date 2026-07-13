@@ -46,6 +46,15 @@ getProductBySlug: async (req: Request, res: Response) => {
     res.status(201).json(ApiResponse.success("Product created.", product));
   },
 
+  getProductById: async (req: Request, res: Response) => {
+    const userId = (req as any).user.userId;
+    const productId = Array.isArray(req.params.id)
+      ? req.params.id[0]
+      : req.params.id;
+    const product = await productService.getProductById(userId, productId);
+    res.json(ApiResponse.success("Product retrieved.", product));
+  },
+
   updateProduct: async (req: Request, res: Response) => {
   const parsed = updateProductSchema.safeParse(req.body);
   if (!parsed.success) {

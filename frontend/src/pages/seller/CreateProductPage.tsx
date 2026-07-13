@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { productService } from "../../services/productService";
 import { Category } from "../../types/productTypes";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,12 @@ import {
 
 const CreateProductPage = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const isEditMode = Boolean(id);
+
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(isEditMode);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [form, setForm] = useState({
     name: "",
@@ -34,6 +39,37 @@ const CreateProductPage = () => {
   useEffect(() => {
     productService.getCategories().then(setCategories).catch(() => {});
   }, []);
+
+  // Load existing product data when in edit mode
+  useEffect(() => {
+    if (!id) return;
+
+    setIsFetching(true);
+    productService
+      .getProductById(id)
+      .then((product) => {
+        setForm({
+          name: product.name,
+          description: product.description || "",
+          price: String(product.price),
+          stock: String(product.stock),
+          weight: String(product.weight),
+          categoryId: product.category?.id || "",
+        });
+        if (product.images && product.images.length > 0) {
+          setImages(
+            [...product.images]
+              .sort((a, b) => a.order - b.order)
+              .map((img) => ({ url: img.url, isPrimary: img.isPrimary }))
+          );
+        }
+      })
+      .catch((err: any) => {
+        toast.error(err.response?.data?.message || "Gagal memuat produk.");
+        navigate("/seller/store");
+      })
+      .finally(() => setIsFetching(false));
+  }, [id, navigate]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -73,7 +109,7 @@ const CreateProductPage = () => {
 
     setIsLoading(true);
     try {
-      await productService.createProduct({
+      const payload = {
         name: form.name,
         description: form.description || undefined,
         price: Number(form.price),
@@ -81,19 +117,57 @@ const CreateProductPage = () => {
         weight: Number(form.weight),
         categoryId: form.categoryId,
         images: validImages,
-      });
-      toast.success("🎉 Produk berhasil ditambahkan!");
+      };
+
+      if (isEditMode && id) {
+        await productService.updateProduct(id, payload);
+        toast.success("✅ Produk berhasil diperbarui!");
+      } else {
+        await productService.createProduct(payload);
+        toast.success("🎉 Produk berhasil ditambahkan!");
+      }
       navigate("/seller/store");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Gagal membuat produk.");
+      toast.error(
+        err.response?.data?.message ||
+          (isEditMode ? "Gagal memperbarui produk." : "Gagal membuat produk.")
+      );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    const confirmed = window.confirm(
+      "Yakin ingin menghapus produk ini? Tindakan ini tidak dapat dibatalkan."
+    );
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+    try {
+      await productService.deleteProduct(id);
+      toast.success("Produk berhasil dihapus.");
+      navigate("/seller/store");
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Gagal menghapus produk.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   // Check if primary image URL is valid for preview
   const primaryImageUrl = images[0]?.url;
   const hasPrimaryImage = primaryImageUrl && primaryImageUrl.startsWith("http");
+
+  if (isFetching) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-16 flex flex-col items-center justify-center text-center">
+        <span className="w-8 h-8 border-2 border-orange-200 border-t-orange-500 rounded-full animate-spin mb-4" />
+        <p className="text-sm text-muted-foreground">Memuat data produk...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -107,16 +181,42 @@ const CreateProductPage = () => {
           <ChevronLeft className="w-4 h-4" />
           Kembali ke Toko
         </button>
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center">
-            <Package className="w-6 h-6 text-orange-500" />
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center">
+              <Package className="w-6 h-6 text-orange-500" />
+            </div>
+            <div>
+              <h1 className="text-xl font-black text-foreground">
+                {isEditMode ? "Edit Produk" : "Tambah Produk Baru"}
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {isEditMode
+                  ? "Perbarui detail produkmu."
+                  : "Isi detail produk yang ingin kamu jual."}
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-xl font-black text-foreground">Tambah Produk Baru</h1>
-            <p className="text-sm text-muted-foreground">
-              Isi detail produk yang ingin kamu jual.
-            </p>
-          </div>
+
+          {isEditMode && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isDeleting}
+              onClick={handleDelete}
+              className="rounded-xl border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 shrink-0"
+            >
+              {isDeleting ? (
+                <span className="w-4 h-4 border-2 border-red-200 border-t-red-500 rounded-full animate-spin" />
+              ) : (
+                <>
+                  <Trash2 className="w-4 h-4 mr-1.5" />
+                  Hapus
+                </>
+              )}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -376,6 +476,11 @@ const CreateProductPage = () => {
               <>
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />
                 Menyimpan...
+              </>
+            ) : isEditMode ? (
+              <>
+                <Package className="w-4 h-4 mr-1.5" />
+                Simpan Perubahan
               </>
             ) : (
               <>

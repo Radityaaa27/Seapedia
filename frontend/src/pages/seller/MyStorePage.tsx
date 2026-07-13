@@ -275,7 +275,7 @@ const MyStorePage = () => {
                 <div
                   key={product.id}
                   className="border border-border/60 rounded-2xl overflow-hidden hover:border-orange-300 hover:shadow-md transition-all duration-200 cursor-pointer group"
-                  onClick={() => navigate(`/seller/products/${product.id}`)}
+                  onClick={() => navigate(`/seller/products/${product.id}/edit`)}
                 >
                   {/* Product Image */}
                   <div className="bg-muted h-36 flex items-center justify-center overflow-hidden relative">
@@ -291,12 +291,28 @@ const MyStorePage = () => {
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
                       <div className="flex gap-1.5">
-                        <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/products/${store.slug}/${product.slug}`);
+                          }}
+                          className="w-7 h-7 bg-white rounded-lg flex items-center justify-center shadow-sm hover:bg-orange-50"
+                          title="Lihat produk"
+                        >
                           <Eye className="w-3.5 h-3.5 text-gray-700" />
-                        </div>
-                        <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/seller/products/${product.id}/edit`);
+                          }}
+                          className="w-7 h-7 bg-white rounded-lg flex items-center justify-center shadow-sm hover:bg-orange-50"
+                          title="Edit produk"
+                        >
                           <Edit className="w-3.5 h-3.5 text-gray-700" />
-                        </div>
+                        </button>
                       </div>
                     </div>
                     {/* Stock badge */}

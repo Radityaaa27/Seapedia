@@ -83,6 +83,10 @@ const App = () => {
                       element={<CreateProductPage />}
                     />
                     <Route
+                      path="/seller/products/:id/edit"
+                      element={<CreateProductPage />}
+                    />
+                    <Route
                       path="/seller/orders"
                       element={<SellerOrdersPage />}
                     />

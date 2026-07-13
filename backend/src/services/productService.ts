@@ -36,6 +36,19 @@ export const productService = {
     return productRepository.create(store.id, input);
   },
 
+  getProductById: async (userId: string, productId: string) => {
+    // Used by the seller to load their own product for editing
+    const product = await productRepository.findById(productId);
+    if (!product) throw ApiError.notFound("Product not found.");
+
+    const store = await storeRepository.findByUserId(userId);
+    if (!store || product.storeId !== store.id) {
+      throw ApiError.forbidden("You do not own this product.");
+    }
+
+    return product;
+  },
+
   updateProduct: async (userId: string, productId: string, input: UpdateProductInput) => {
     // Verify ownership
     const product = await productRepository.findById(productId);

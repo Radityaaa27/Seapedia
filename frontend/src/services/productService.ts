@@ -17,6 +17,11 @@ export const productService = {
     return res.data.data;
   },
 
+  getProductById: async (id: string) => {
+    const res = await api.get<{ data: Product }>(`/products/manage/${id}`);
+    return res.data.data;
+  },
+
   updateProduct: async (id: string, input: Partial<CreateProductInput>) => {
     const res = await api.put<{ data: Product }>(`/products/${id}`, input);
     return res.data.data;
