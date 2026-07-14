@@ -8,6 +8,16 @@ const router = Router();
 
 // Public
 router.get("/", asyncHandler(productController.getProducts));
+
+// Seller only — must be registered BEFORE the public "/:storeSlug/:productSlug"
+// route below, otherwise it would be swallowed by that route instead.
+router.get(
+  "/manage/:id",
+  authenticate,
+  requireRole("SELLER"),
+  asyncHandler(productController.getProductById)
+);
+
 router.get(
   "/:storeSlug/:productSlug",
   asyncHandler(productController.getProductBySlug)
