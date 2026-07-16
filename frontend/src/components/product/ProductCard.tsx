@@ -17,7 +17,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <Link to={`/products/${product.store?.slug}/${product.slug}`} className="block h-full group">
-      <Card className="cursor-pointer border border-border/60 hover:border-orange-500/30 rounded-2xl overflow-hidden h-full shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col bg-card">
+      <Card className="cursor-pointer border border-border hover:border-orange-500/40 rounded-2xl overflow-hidden h-full shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col bg-card">
         <CardContent className="p-0 flex flex-col h-full flex-1">
           {/* Image Container */}
           <div className="relative bg-muted/40 aspect-square overflow-hidden border-b border-border/50 flex items-center justify-center p-3 bg-grid-pattern">
